@@ -80,13 +80,16 @@ def main() -> None:
     ap.add_argument("--script", help="text file with the voiceover script (fallback timing)")
     ap.add_argument("--language", default=None)
     ap.add_argument("--force-estimate", action="store_true")
+    ap.add_argument("--audio", help="voiceover file to transcribe (default: the project's assets/voiceover file)")
+    ap.add_argument("--out", default="work/transcript.json", help="output path relative to the project")
     args = ap.parse_args()
 
     p = project_paths(args.project)
-    vo = find_voiceover(p)
-    if not vo:
-        dump_json(p["work"] / "transcript.json", {"engine": "none", "duration": None, "segments": [], "error": "no voiceover file"})
-        sys.exit("no voiceover found in assets/voiceover/")
+    out_path = p["root"] / args.out
+    vo = (p["root"] / args.audio if not Path(args.audio).is_absolute() else Path(args.audio)) if args.audio else find_voiceover(p)
+    if not vo or not vo.exists():
+        dump_json(out_path, {"engine": "none", "duration": None, "segments": [], "error": "no voiceover file"})
+        sys.exit("no voiceover found (assets/voiceover/ or --audio)")
     duration = probe(vo).get("duration")
 
     result, why = (None, "forced estimate") if args.force_estimate else whisper(vo, args.model, args.language)
@@ -97,15 +100,15 @@ def main() -> None:
             result = estimate(script, duration)
             result["note"] = f"{why}; timings estimated from script text"
         else:
-            dump_json(p["work"] / "transcript.json", {"engine": "none", "duration": duration, "segments": [], "error": why})
+            dump_json(out_path, {"engine": "none", "duration": duration, "segments": [], "error": why})
             print(f"transcript.json: engine none ({why}); add `script:` to brief.md or install faster-whisper", file=sys.stderr)
             sys.exit(2)
 
     result["voiceover"] = str(vo.relative_to(p["root"]))
     result["duration"] = duration
     result["word_count"] = sum(len(s["words"]) for s in result["segments"])
-    dump_json(p["work"] / "transcript.json", result)
-    print(f"transcript.json: engine={result['engine']} duration={duration}s segments={len(result['segments'])} words={result['word_count']}")
+    dump_json(out_path, result)
+    print(f"{args.out}: engine={result['engine']} duration={duration}s segments={len(result['segments'])} words={result['word_count']}")
     for s in result["segments"][:8]:
         print(f"  {s['start']:6.2f}-{s['end']:6.2f}  {s['text'][:80]}")
     if len(result["segments"]) > 8:

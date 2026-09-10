@@ -36,6 +36,23 @@ user's notes.
    with `duck: true` so it sits under the voice, fading out over the last 2 s.
 7. Write `work/edl.json`.
 
+## Reels mode (9:16, captions)
+
+- Canvas from the brief's platform spec (default 1080x1920, 30 fps). `fit: cover` with the
+  shot's `focus_x`/`focus_y`; `fit: blur` only when the crop loses the subject.
+- Image items: `{"type": "image", "src", "duration", "motion": "push-in|push-out|pan-left|pan-right", "zoom": 0.12}`.
+- Captions on every reel: `python3 squads/video-production/scripts/captions.py projects/<slug>
+  --transcript work/videos/<id>/transcript.json --out work/videos/<id>/captions.ass --style reels
+  --highlight --position 0.70` (style, position, colors and highlight from the brief), then
+  `"captions": {"ass": "work/videos/<id>/captions.ass"}` in the EDL. Pass `--offset` equal to
+  the voiceover's `start` if it doesn't start at 0.
+- Safe zones from `reels-format.md`: logo top-left or top-right inside the safe margin, captions
+  at 0.62-0.72 of the height, nothing important in the bottom 20% or the right 12%.
+- End card 2-3 s with the logo and the CTA text from the batch spec.
+- Render with `--render-dir work/videos/<id>/render --out output/reels/<slug>_<id>_<platform>.mp4`.
+- Loudness target -14 LUFS for social: set `"loudnorm": true` and add `"loudnorm_target": -14`
+  if the brief asks; default stays -16.
+
 ## Render
 
 ```

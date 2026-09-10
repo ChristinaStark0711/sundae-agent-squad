@@ -1,0 +1,32 @@
+{
+  "meta": {
+    "slug": "my-reels", "count": 6, "platforms": ["instagram", "tiktok", "shorts"],
+    "canvas": {"width": 1080, "height": 1920, "fps": 30},
+    "captions": {"style": "reels", "highlight": true, "position": 0.70},
+    "music": "library", "credit_cap": 3000, "est_credits_total": 1260,
+    "approved_settings": null,
+    "variety_matrix": {"assets/footage/office_walk.mp4": ["r01", "r03"], "assets/images/team_photo.jpg": ["r02"]}
+  },
+  "videos": [
+    {
+      "id": "r01", "is_test": true, "status": "planned",
+      "voiceover": {"path": "assets/voiceover/why_we_started.m4a", "in": 0.0, "out": 38.5},
+      "transcript": "work/transcripts/why_we_started.json",
+      "hook": "We didn't start this to build software.",
+      "angle": "origin story, warm",
+      "target_length": 41.0,
+      "visuals": [
+        {"path": "assets/footage/office_walk.mp4", "kind": "footage", "in": 0.5, "duration": 3.0, "focus_x": 0.4, "covers": "hook"},
+        {"path": "assets/images/team_photo.jpg", "kind": "image", "duration": 2.5, "motion": "push-in", "covers": "who we are"}
+      ],
+      "broll_gaps": [
+        {"id": "g1", "after": "who we are", "brief": "detail insert, hands on a laptop keyboard, warm office light, 9:16", "seconds": 3}
+      ],
+      "captions": {"style": "reels", "highlight": true},
+      "music": {"path": "assets/music/upbeat_01.mp3", "gain_db": -22},
+      "end_card": {"text": "Follow for more", "seconds": 2.5},
+      "est_credits": 180,
+      "output": "output/reels/my-reels_r01_all.mp4"
+    }
+  ]
+}

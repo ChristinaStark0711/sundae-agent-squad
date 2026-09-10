@@ -1,0 +1,18 @@
+{
+  "meta": {"slug": "my-reels", "source": "google-drive-connector | drive_pull", "catalogued": "2026-09-10T00:00:00Z"},
+  "look_profile": "handheld phone footage, warm office light, clean and slightly flat, brand orange appears on walls and shirts",
+  "coverage": {"has": ["team at desks", "office exterior", "product close-ups"], "lacks": ["customers", "night shots", "hands typing"]},
+  "assets": [
+    {"kind": "footage", "path": "assets/footage/office_walk.mp4", "duration": 14.2, "width": 1920, "height": 1080,
+     "orientation": "horizontal", "description": "gimbal walk through the open office, people at desks, morning light",
+     "tags": ["office", "team", "walkthrough"], "energy": "medium", "quality": "sharp, slight flicker at 9s",
+     "usable_ranges": [[0.5, 8.5], [10.0, 14.0]], "focus_x": 0.4, "focus_y": 0.5, "has_people": true, "has_text_or_logo": false},
+    {"kind": "images", "path": "assets/images/team_photo.jpg", "width": 4000, "height": 3000, "orientation": "horizontal",
+     "description": "team photo on the roof terrace, 12 people, sunset", "tags": ["team", "group"], "energy": "high",
+     "focus_x": 0.5, "focus_y": 0.45, "has_people": true, "has_text_or_logo": false},
+    {"kind": "voiceover", "path": "assets/voiceover/why_we_started.m4a", "duration": 38.5,
+     "summary": "founder on why the company started and who it serves", "speaker": "CEO", "mood": "warm, reflective"},
+    {"kind": "music", "path": "assets/music/upbeat_01.mp3", "duration": 92.0, "bpm_feel": "fast", "mood": "bright", "has_vocals": false},
+    {"kind": "brand", "path": "assets/brand/logo.png", "width": 1200, "height": 400, "transparent": true}
+  ]
+}

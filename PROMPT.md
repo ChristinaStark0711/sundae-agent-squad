@@ -38,6 +38,13 @@ b-roll director (prompt + platform + model + params + credits per gap) · b-roll
 (executes the plan on Open Art / Higgsfield, downloads and verifies clips, one retry) · editor
 (EDL → ffmpeg assembly, logo, music ducking, export, revisions) · QA (checklist, verdict, fix list).
 
+Reels mode, same squad: a librarian that pulls videos, images, voiceovers, music and the logo
+from named Google Drive folders (connector first, link-shared fallback) and catalogs them; a
+batch planner that mixes and matches them into 9:16 shorts for Instagram Reels, TikTok and
+YouTube Shorts with burned-in captions, safe-zone logo, music ducking and an end card; and a
+hard gate that builds ONE test video, stops for my confirmation, then builds the rest with my
+notes applied batch-wide.
+
 Write the playbooks the agents follow (platform routing with current model ids and prices,
 b-roll prompting formula, edit rules, QA checklist), the templates for every file the agents
 exchange, the local scripts (probe, transcribe, extract frames, assemble, contact sheet, QA
@@ -74,6 +81,18 @@ Fully automatic (brief must have `approval: auto` or pass `--auto`; still capped
 
 ```
 /build-video projects/sundae-event-video --auto
+```
+
+Reels batch from Google Drive (test one first, then the rest):
+
+```
+/build-reels projects/sundae-reels
+```
+
+then, after watching the test video:
+
+```
+/build-reels projects/sundae-reels --continue
 ```
 
 ---

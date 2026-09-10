@@ -38,6 +38,36 @@ Revisions:
 /build-video projects/sundae-event-video --revise "tighten the opening, swap shot s07 for something with more people"
 ```
 
+## Reels, TikToks and Shorts from a Google Drive library
+
+The same squad has a **reels mode** for batches of 9:16 captioned shorts:
+
+1. Share the Drive folders (Footage, Images, Voiceovers, Music, Brand) and put their links in
+   `projects/<slug>/brief.md` under `drive_folders:` (start from `templates/brief-reels.md` or
+   run `/new-video-brief <slug> --reels`). Enable the Google Drive connector in the chat; folders
+   shared by link also work without it.
+2. Run:
+
+   ```
+   /build-reels projects/sundae-reels
+   ```
+
+   The librarian pulls and catalogs everything, the planner writes a mix-and-match batch (no two
+   videos share more than half their visuals, every voiceover is used), and the squad builds
+   **one test video** with burned-in captions, the logo in the safe zone, music ducked under the
+   voice and an end card, then **stops** and shows it to you.
+3. Watch it, give notes if any, then:
+
+   ```
+   /build-reels projects/sundae-reels --continue
+   ```
+
+   Your notes become batch-wide settings and the remaining videos are built one at a time into
+   `output/reels/`, with a batch report and, if `drive_output_folder` is set, an upload to Drive.
+
+Format rules (safe zones, lengths, caption styles, vertical cropping) are in
+`squads/video-production/playbooks/reels-format.md`.
+
 ## How the squad works
 
 ```
@@ -81,9 +111,9 @@ The full decision table, model list and live credit costs are in
 ## Repo layout
 
 ```
-.claude/agents/          video-producer, video-intake, video-story-editor, broll-director,
-                         broll-generator, video-editor, video-qa
-.claude/skills/          /build-video, /new-video-brief, /new-squad
+.claude/agents/          video-producer, drive-librarian, reels-planner, video-intake,
+                         video-story-editor, broll-director, broll-generator, video-editor, video-qa
+.claude/skills/          /build-video, /build-reels, /new-video-brief, /new-squad
 squads/video-production/ SQUAD.md, playbooks/, templates/, scripts/
 squads/_template/        starting point for a new squad
 projects/                one folder per job (media is gitignored, plans and reports are not)
@@ -96,7 +126,10 @@ CLAUDE.md                house rules every session loads
 - Claude Code with the Open Art, Higgsfield and GitHub connectors.
 - Python 3.10+.
 - ffmpeg on PATH, or `pip install imageio-ffmpeg` (bundles a static build; the scripts find it automatically).
-- Optional: `pip install faster-whisper` for word-level voiceover timestamps. It downloads a model
+- Optional: `pip install gdown` for the Google Drive link-sharing fallback (the Drive connector
+  covers private folders).
+- Optional: `pip install faster-whisper` for word-level voiceover timestamps (also drives the
+  burned-in captions). It downloads a model
   from Hugging Face on first use; where that is blocked (some sandboxes) the squad falls back to a
   timing estimate from the script in the brief. `pip install Pillow` for text on title cards.
 

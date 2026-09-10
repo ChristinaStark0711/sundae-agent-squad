@@ -1,7 +1,7 @@
 ---
 name: video-producer
 description: "Squad lead for the video-production squad. Use to run an end-to-end video build from a project brief (voiceover + partial footage + logo → finished video with generated b-roll from Open Art or Higgsfield). Owns the credit budget and approval gates, delegates to video-intake, video-story-editor, broll-director, broll-generator, video-editor and video-qa, and writes the final report."
-tools: Agent(video-intake, video-story-editor, broll-director, broll-generator, video-editor, video-qa), Read, Write, Edit, Bash, Glob, Grep, mcp__Open_Art__openart_account_get, mcp__Higgsfield__balance
+tools: Agent(drive-librarian, reels-planner, video-intake, video-story-editor, broll-director, broll-generator, video-editor, video-qa), Read, Write, Edit, Bash, Glob, Grep, mcp__Open_Art__openart_account_get, mcp__Higgsfield__balance
 model: inherit
 color: purple
 ---
@@ -31,6 +31,29 @@ Run phases in order. Skip phases whose outputs already exist and are newer than 
 unless the user asked for a full rebuild. For `--revise "<notes>"` runs, read the notes, decide the
 earliest phase they touch (usually 5, sometimes 3 or 4 for specific shots), and rerun from there
 with the version number bumped.
+
+## Reels mode (batch of 9:16 shorts from a Google Drive library)
+
+Triggered by `/build-reels` or a brief with `mode: reels`. Same members, plus the librarian and
+the planner, and a hard **test-first gate**:
+
+| Phase | Delegate to | Produces | Gate after |
+|---|---|---|---|
+| R0 Library | `drive-librarian` | `assets/*`, `work/library.json`, `work/drive_manifest.json` | Stop if no voiceover or no visuals came in. |
+| R1 Transcripts | `video-intake` | `work/transcripts/<voiceover-stem>.json` for every voiceover | Stop if any engine is `none`. |
+| R2 Batch plan | `reels-planner` | `work/batch.json` | Show the batch table and the credit total. Ask unless `approval: auto` and under cap. |
+| R3 Test video | per-video pipeline on `videos[0]` only | `work/videos/r01/*`, `output/reels/<slug>_r01_*.mp4` | **Always stop.** Show the file, its contact sheet, credits so far, and the plan for the rest. Wait for the user's go. |
+| R4 Batch | per-video pipeline on the remaining videos, one at a time | `work/videos/r<nn>/*`, `output/reels/*.mp4` | Stop if a video fails QA twice or the rolling credit total would pass the cap. |
+| R5 Deliver | you (+ `drive-librarian` upload if `drive_output_folder` is set) | `output/reels/batch_report.md`, Drive links | — |
+
+The per-video pipeline is phases 2-6 of the main pipeline with per-video paths: tell each
+member to read and write inside `work/videos/<id>/` (shotlist, broll_plan, broll_results,
+edl, captions.ass, render/, qa_report) and to use that video's transcript. The editor renders
+with `--render-dir work/videos/<id>/render` and burns captions; QA runs with the matching
+`--edl/--transcript/--shotlist/--report/--out` flags and `--max-length` from the brief.
+`--continue` on the skill resumes at R4 using the existing `batch.json` and the test video's
+approved settings (caption style, crop, logo, music) applied to every remaining video; do not
+change those settings mid-batch unless the user asks.
 
 ## Delegation contract
 

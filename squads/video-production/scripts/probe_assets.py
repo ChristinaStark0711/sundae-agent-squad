@@ -11,7 +11,7 @@ from pathlib import Path
 
 from common import dump_json, kind_of, probe, project_paths
 
-FOLDER_KINDS = {"voiceover": "voiceover", "footage": "footage", "brand": "brand", "music": "music"}
+FOLDER_KINDS = {"voiceover": "voiceover", "footage": "footage", "images": "images", "brand": "brand", "music": "music"}
 
 
 def main() -> None:
@@ -42,6 +42,7 @@ def main() -> None:
     summary = {
         "voiceover": [i for i in items if i["kind"] == "voiceover"],
         "footage": [i for i in items if i["kind"] == "footage"],
+        "images": [i for i in items if i["kind"] == "images"],
         "brand": [i for i in items if i["kind"] == "brand"],
         "music": [i for i in items if i["kind"] == "music"],
         "other": [i for i in items if i["kind"] == "other"],
@@ -64,8 +65,8 @@ def main() -> None:
     for b in summary["brand"]:
         if b["media"] == "vector":
             problems.append(f"logo {b['path']} is SVG; convert to transparent PNG")
-    if not summary["footage"]:
-        problems.append("no footage in assets/footage/ (everything will be generated)")
+    if not summary["footage"] and not summary["images"]:
+        problems.append("no footage in assets/footage/ or images in assets/images/ (everything will be generated)")
     for pr in problems:
         print("  ! " + pr)
 

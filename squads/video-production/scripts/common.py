@@ -166,8 +166,9 @@ def project_paths(project: str | Path) -> dict[str, Path]:
         "refs": root / "work" / "refs",
         "broll": root / "work" / "broll",
         "render": root / "work" / "render",
+        "videos": root / "work" / "videos",
     }
-    for key in ("work", "output", "stills", "refs", "broll", "render"):
+    for key in ("work", "output", "stills", "refs", "broll", "render", "videos"):
         p[key].mkdir(parents=True, exist_ok=True)
     return p
 

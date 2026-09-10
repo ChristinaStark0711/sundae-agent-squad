@@ -31,6 +31,16 @@ Read: `brief.md`, `work/shotlist.json`, `work/edl.json`, `work/transcript.json`,
 5. **Brief compliance.** Must-show moments included, length within the brief's range, aspect
    ratio, anything the brief says to avoid.
 
+## Reels mode
+
+Also check, against `reels-format.md`: aspect 9:16 and the platform's length limit
+(`qa_checks.py --max-length`), the hook lands in the first 2 s, captions are readable at phone
+size (view the sheet at full size), caption text matches the voiceover words and is not covering
+faces, nothing important sits in the bottom 20% or right 12% (platform UI), logo inside the safe
+margin, the subject survives every 9:16 crop, generated clips have no text, and the end card has
+the CTA. Run with the per-video flags the producer gives you (`--edl`, `--transcript`,
+`--shotlist`, `--report`, `--out`).
+
 ## Report
 
 Write `work/qa_report.md`:

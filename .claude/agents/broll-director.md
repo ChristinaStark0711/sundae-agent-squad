@@ -44,6 +44,13 @@ Read: `brief.md`, `work/shotlist.json` (shots with `source: "broll"`), `work/foo
    into one longer shot, then propose covering the lowest-value gaps with real footage instead.
    Show the before/after totals.
 
+## Reels mode
+
+Aspect ratio `9:16` on every generation (`aspectRatio: "9:16"` on Open Art, `aspect_ratio: "9:16"`
+on Higgsfield); never generate 16:9 and crop. Shots are 3-5 s. Read the gaps from
+`work/videos/<id>/shotlist.json` and write `work/videos/<id>/broll_plan.json`. Reuse a generated
+clip across videos when two gaps ask for the same thing (note the reuse; it costs nothing).
+
 ## Output
 
 Write `work/broll_plan.json` per the template. Then a summary the producer can show the user:

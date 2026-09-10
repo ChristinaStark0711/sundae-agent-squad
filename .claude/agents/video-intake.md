@@ -47,6 +47,12 @@ with `python3`. All output goes to `projects/<slug>/work/`.
    every 30-60 s. Merge the scene list into `footage_notes.md`. Warn that accuracy drops on
    long clips.
 
+## Reels mode
+
+The library may hold several voiceovers. Transcribe each one:
+`python3 squads/video-production/scripts/transcribe.py projects/<slug> --audio assets/voiceover/<file> --out work/transcripts/<stem>.json`.
+Skip the footage notes if `work/library.json` already describes the clips (the librarian did it).
+
 ## Output summary
 
 End with: voiceover duration, transcript engine, clip count and total usable seconds, logo

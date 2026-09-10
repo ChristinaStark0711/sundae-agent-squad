@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """Automated checks on a rendered cut → work/qa_checks.json.
 
-usage: qa_checks.py <project> <video> [--black 0.3] [--silence 2.5] [--tolerance 1.0]
+usage: qa_checks.py <project> <video> [--black 0.3] [--silence 2.5] [--tolerance 1.0] [--max-length 90]
+       [--edl work/edl.json] [--transcript work/transcript.json] [--shotlist work/shotlist.json]
+       [--report work/render/timeline_report.json] [--out work/qa_checks.json]
 
 Checks: duration vs voiceover + cards, black intervals, silence in the mix, integrated
 loudness and true peak, resolution/fps/pixel format vs the EDL canvas, faststart, and segment
@@ -49,6 +51,12 @@ def main() -> None:
     ap.add_argument("--black", type=float, default=0.3)
     ap.add_argument("--silence", type=float, default=2.5)
     ap.add_argument("--tolerance", type=float, default=1.0)
+    ap.add_argument("--edl", default="work/edl.json")
+    ap.add_argument("--transcript", default="work/transcript.json")
+    ap.add_argument("--shotlist", default="work/shotlist.json")
+    ap.add_argument("--report", default="work/render/timeline_report.json")
+    ap.add_argument("--out", default="work/qa_checks.json")
+    ap.add_argument("--max-length", type=float, default=None, help="fail if the video is longer than this (reels: 60-90)")
     args = ap.parse_args()
 
     p = project_paths(args.project)
@@ -62,10 +70,10 @@ def main() -> None:
 
     # duration
     vo_dur, cards = None, 0.0
-    tr = p["work"] / "transcript.json"
+    tr = p["root"] / args.transcript
     if tr.exists():
         vo_dur = load_json(tr).get("duration")
-    edl_path = p["work"] / "edl.json"
+    edl_path = p["root"] / args.edl
     edl = load_json(edl_path) if edl_path.exists() else {}
     for it in edl.get("timeline", []):
         if it.get("type") == "card":
@@ -115,8 +123,10 @@ def main() -> None:
             add("loudness_lufs", -18.5 <= lufs <= -13.5, lufs, "-16 ± 2.5", "integrated")
             add("true_peak_dbtp", tp <= -1.0, tp, "≤ -1.0", "")
     # segment starts vs shot list
-    rep = p["work"] / "render" / "timeline_report.json"
-    sl = p["work"] / "shotlist.json"
+    if args.max_length:
+        add("max_length", (info.get("duration") or 0) <= args.max_length, info.get("duration"), f"≤ {args.max_length}", "platform limit")
+    rep = p["root"] / args.report
+    sl = p["root"] / args.shotlist
     if rep.exists() and sl.exists():
         shots = {s["id"]: s for s in load_json(sl).get("shots", [])}
         drift = []
@@ -127,7 +137,7 @@ def main() -> None:
         add("segment_starts", not drift, drift, "within 0.25s of shotlist", "")
 
     out = {"video": str(video), "all_pass": all(c["pass"] for c in checks), "checks": checks}
-    dump_json(p["work"] / "qa_checks.json", out)
+    dump_json(p["root"] / args.out, out)
     for c in checks:
         mark = "PASS" if c["pass"] else "FAIL"
         print(f"  {mark} {c['name']:18} {c['value']!s:40.40} expected {c['expected']}  {c['detail']}")

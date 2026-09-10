@@ -32,6 +32,15 @@ Read: `brief.md`, `work/transcript.json`, `work/assets.json`, `work/footage_note
    two generated shots back to back when a real one is available; hold the end card 3-4 s.
 6. **Aspect ratio** from the brief (default 16:9). Flag real clips that will need cropping.
 
+## Reels mode
+
+When the producer hands you a `batch.json` video spec instead of footage notes, the visuals are
+already chosen: order them against the voiceover, set in/out points and durations, add Ken
+Burns motion to images (`motion`, `zoom`), carry `focus_x`/`focus_y` for horizontal clips on a
+9:16 canvas, keep shots 1.5-4 s (shorts cut faster), put the hook visual first, and keep the
+`broll_gaps` from the spec as `source: "broll"` shots. Follow
+`squads/video-production/playbooks/reels-format.md`. Write to `work/videos/<id>/shotlist.json`.
+
 ## Output
 
 Write `work/shotlist.json` following the template schema exactly: `meta`, `beats[]`, `shots[]`

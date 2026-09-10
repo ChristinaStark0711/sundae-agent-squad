@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 """Assemble a cut from an EDL with ffmpeg.
 
-usage: assemble.py <project> [--edl work/edl.json] [--out output/<slug>_v1.mp4] [--draft] [--validate]
+usage: assemble.py <project> [--edl work/edl.json] [--out output/<slug>_v1.mp4] [--draft] [--validate] [--render-dir work/render]
 
 EDL schema: see squads/video-production/templates/edl.json.
+
+Item types: clip (default; src/in/duration/fit/focus_x/focus_y/speed), image (src/duration/motion/zoom),
+card (background/image/text). Top-level "captions": {"ass": "work/captions.ass"} burns subtitles in.
 
 Timeline semantics
 - items play back to back in order; `transition` on an item overlaps the previous item, so
@@ -39,7 +42,7 @@ FONT_CANDIDATES = [
 
 
 class Job:
-    def __init__(self, project: str, edl_path: str, out: str | None, draft: bool):
+    def __init__(self, project: str, edl_path: str, out: str | None, draft: bool, render_dir: str | None = None):
         self.p = project_paths(project)
         self.root = self.p["root"]
         self.ff = ffmpeg_bin()
@@ -52,7 +55,8 @@ class Job:
         if draft:
             self.W, self.H = (self.W // 2) // 2 * 2, (self.H // 2) // 2 * 2
         self.bg = canvas.get("background") or "#000000"
-        self.render = self.p["render"]
+        self.render = (self.root / render_dir) if render_dir else self.p["render"]
+        self.render.mkdir(parents=True, exist_ok=True)
         slug = self.root.name
         default_out = f"output/{slug}_v1{'_draft' if draft else ''}.mp4"
         self.out = self.root / (out or default_out)
@@ -156,13 +160,17 @@ class Job:
         if fit == "blur":
             return (f"split[a][b];[a]scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},boxblur=24:4[bg];"
                     f"[b]scale={W}:{H}:force_original_aspect_ratio=decrease:flags=lanczos[fg];[bg][fg]overlay=(W-w)/2:(H-h)/2")
-        return f"scale={W}:{H}:force_original_aspect_ratio=increase:flags=lanczos,crop={W}:{H}"
+        fx = float(it.get("focus_x", 0.5))
+        fy = float(it.get("focus_y", 0.5))
+        return f"scale={W}:{H}:force_original_aspect_ratio=increase:flags=lanczos,crop={W}:{H}:(iw-ow)*{fx}:(ih-oh)*{fy}"
 
     def render_item(self, i: int, it: dict) -> Path:
         out = self.render / f"seg_{i:02}.mp4"
         dur = float(it["duration"])
         if it.get("type") == "card":
             return self.render_card(i, it, out)
+        if it.get("type") == "image":
+            return self.render_image(i, it, out)
         src = self.root / it["src"]
         speed = float(it.get("speed") or 1.0)
         src_in = float(it.get("in") or 0.0)
@@ -179,6 +187,38 @@ class Job:
         got = probe(out).get("duration") or 0
         if abs(got - dur) > 0.15:
             self.warnings.append(f"{it.get('id')}: rendered {got:.2f}s, wanted {dur:.2f}s (source shorter than in+duration?)")
+        return out
+
+    def render_image(self, i: int, it: dict, out: Path) -> Path:
+        """A still with a slow Ken Burns move: motion = push-in | push-out | pan-left | pan-right | static."""
+        dur = float(it["duration"])
+        W, H = self.W, self.H
+        frames = int(round(dur * self.fps))
+        motion = it.get("motion", "push-in")
+        amount = float(it.get("zoom", 0.12))
+        fx = float(it.get("focus_x", 0.5))
+        fy = float(it.get("focus_y", 0.5))
+        big_w, big_h = W * 2, H * 2  # oversample so the zoom stays sharp
+        pre = f"scale={big_w}:{big_h}:force_original_aspect_ratio=increase:flags=lanczos,crop={big_w}:{big_h}:(iw-ow)*{fx}:(ih-oh)*{fy}"
+        n = max(frames - 1, 1)
+        if motion == "push-out":
+            z = f"{1 + amount}-{amount}*on/{n}"
+            x, y = "iw/2-(iw/zoom/2)", "ih/2-(ih/zoom/2)"
+        elif motion == "pan-left":
+            z = f"{1 + amount}"
+            x, y = f"(iw-iw/zoom)*(1-on/{n})", "ih/2-(ih/zoom/2)"
+        elif motion == "pan-right":
+            z = f"{1 + amount}"
+            x, y = f"(iw-iw/zoom)*on/{n}", "ih/2-(ih/zoom/2)"
+        elif motion == "static":
+            z, x, y = "1", "0", "0"
+        else:  # push-in
+            z = f"1+{amount}*on/{n}"
+            x, y = "iw/2-(iw/zoom/2)", "ih/2-(ih/zoom/2)"
+        vf = f"{pre},zoompan=z='{z}':x='{x}':y='{y}':d={frames}:s={W}x{H}:fps={self.fps},format=yuv420p,setsar=1"
+        cmd = [self.ff, "-hide_banner", "-loglevel", "error", "-y", "-i", str(self.root / it["src"]),
+               "-filter_complex", vf, "-t", f"{dur:.3f}", "-r", str(self.fps), "-an"] + self._enc() + [str(out)]
+        self._run(cmd)
         return out
 
     def render_card(self, i: int, it: dict, out: Path) -> Path:
@@ -317,6 +357,14 @@ class Job:
             chains.append(f"[{n}:v]scale={lw}:-1:flags=lanczos,format=rgba,colorchannelmixer=aa={op:.3f}[ov{n}]")
             chains.append(f"{last}[ov{n}]overlay={x}:{y}:format=auto:shortest=1:enable='between(t,{s:.3f},{e:.3f})'[o{n}]")
             last, n = f"[o{n}]", n + 1
+        cap = self.edl.get("captions")
+        if cap and cap.get("ass"):
+            ass_path = self.root / cap["ass"]
+            if not ass_path.exists():
+                sys.exit(f"captions file not found: {ass_path}")
+            esc = str(ass_path).replace("\\", "/").replace(":", "\\:").replace("'", "\\'")
+            chains.append(f"{last}ass='{esc}'[cap]")
+            last = "[cap]"
         if not chains:
             chains.append(f"{last}null[o0]")
             last = "[o0]"
@@ -412,9 +460,10 @@ def main() -> None:
     ap.add_argument("--out")
     ap.add_argument("--draft", action="store_true", help="half-size, fast encode")
     ap.add_argument("--validate", action="store_true", help="print the computed timeline and exit")
+    ap.add_argument("--render-dir", help="intermediates + timeline_report.json go here (default work/render)")
     args = ap.parse_args()
 
-    job = Job(args.project, args.edl, args.out, args.draft)
+    job = Job(args.project, args.edl, args.out, args.draft, args.render_dir)
     report = job.plan()
     print(f"timeline: {len(report['items'])} items, total {report['total_duration']}s, voiceover {report['voiceover_duration']}s, cards {report['card_total']}s")
     for it in report["items"]:
