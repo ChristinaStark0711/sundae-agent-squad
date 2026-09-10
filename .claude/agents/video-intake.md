@@ -17,6 +17,10 @@ with `python3`. All output goes to `projects/<slug>/work/`.
 
 1. **Fetch remote assets.** If `brief.md` has `assets_urls:`, download each into the matching
    `assets/<kind>/` folder with `python3 squads/video-production/scripts/download.py <url> <dest>`.
+   If it has `drive_folders:`, ask the producer to run `drive-librarian` first (it pulls and
+   catalogs Drive folders); do not pull Drive yourself. If the brief names `voiceover_file:`,
+   that file is the voiceover; other audio in `assets/voiceover/` is left alone (move alternate
+   takes to `assets/voiceover/alt/` so probe picks the right one).
 2. **Inventory.** `python3 squads/video-production/scripts/probe_assets.py projects/<slug>`
    writes `work/assets.json` (kind, path, duration, width, height, fps, audio). Check that there
    is exactly one voiceover and at least one logo. Note a logo that is not a transparent PNG

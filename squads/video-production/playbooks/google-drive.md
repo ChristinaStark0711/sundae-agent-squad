@@ -1,22 +1,31 @@
 # Google Drive access
 
-## What the connector can and cannot do
+## Three ways in, in order of preference
 
-The Google Drive connector (`mcp__Google_Drive__*`) can **list and describe** any file the
-account can see (`search_files`, `get_file_metadata`, `list_recent_files`), **download small
-files inline** as base64 (`download_file_content`, fine for a logo, a photo, a short audio clip;
-not for a 300 MB video), and **upload** (`create_file`). It must be enabled per chat in the
-connector settings.
+1. **Local mount (no download).** Google Drive for Desktop puts the folder on disk. In
+   `brief.md` use `{kind: auto, path: "~/Library/CloudStorage/GoogleDrive-<you>/My Drive/<folder>"}`
+   (Windows: `G:\My Drive\<folder>`). `drive_pull.py --from-brief` links the files into
+   `assets/` and sorts them by type. Works in local Claude Code sessions only.
+2. **Download by file id** (`drive_pull.py --file-id`, gdown). Needs the file or its folder
+   shared as *Anyone with the link* and a session whose network can reach `drive.google.com`
+   (local sessions, or a cloud environment with **Custom** / **Full** network access; the default
+   **Trusted** level blocks it). Check with `doctor.py --network`.
+3. **The connector** (`mcp__Google_Drive__*`). Always works for **listing and metadata**
+   (`search_files`, `get_file_metadata`) and for **uploading** small files (`create_file`).
+   `download_file_content` returns the bytes as base64 inside the tool result; re-emitting that
+   through the model corrupts binaries even at a few KB (tested), so treat it as a last resort
+   for tiny text-like files only, and always verify the written file opens.
 
-Large media therefore comes down by file id with `gdown`, which needs the file or its folder
-shared as *Anyone with the link* (view only). Recommended setup: share the one parent folder by
-link once; keep the connector for listing, cataloguing and uploads.
+The connector must be enabled per chat in the connector settings. It is the librarian's source
+of truth for *what exists* in a folder; how the bytes arrive depends on the session (see the
+README's "Where to run it").
 
 | Need | Tool / script |
 |---|---|
 | list a folder | `search_files` query `parentId = '<folder id>' and (mimeType contains 'video/' or mimeType contains 'image/' or mimeType contains 'audio/')`, paginate with `pageToken` |
 | file details | `get_file_metadata` (name, mimeType, size, modifiedTime) |
-| small file (< ~5 MB) | `download_file_content` → `scripts/drive_pull.py <project> --b64 assets/<kind>/<name>` with the base64 on stdin |
+| local Drive for Desktop folder | `{kind: auto, path: "..."}` in the brief → `scripts/drive_pull.py <project> --from-brief` (links, no download) |
+| tiny file, last resort | `download_file_content` → `scripts/drive_pull.py <project> --b64 assets/<kind>/<name>` (base64 on stdin; verify the file opens) |
 | video / big file | `scripts/drive_pull.py <project> --file-id <id> --kind <kind> --name "<name>"` (link-shared) |
 | whole link-shared folder | `scripts/drive_pull.py <project> --from-brief` (50 files per folder max) |
 | upload a result | `create_file` with `parentId`, `title`, `contentMimeType`, `base64Content`, `disableConversionToGoogleType: true` (small files) |
@@ -36,10 +45,15 @@ Folder id = the part of the folder URL after `/folders/`.
   Output/      (optional) where finished videos are uploaded
 ```
 
+One flat folder with everything in it also works: give it `kind: auto` and the librarian sorts
+by file type (videos → footage, photos → images, audio → voiceover unless the name says
+music/bed/track, images named logo/mark → brand).
+
 Map them in `brief.md`:
 
 ```yaml
 drive_folders:
+  - {kind: auto,      url: "https://drive.google.com/drive/folders/<id>"}   # flat folder, sorted by type
   - {kind: footage,   url: "https://drive.google.com/drive/folders/<id>"}
   - {kind: images,    url: "https://drive.google.com/drive/folders/<id>"}
   - {kind: voiceover, url: "https://drive.google.com/drive/folders/<id>"}

@@ -37,6 +37,14 @@ Roster and pipeline: `squads/video-production/SQUAD.md`.
 7. **Test one before many.** Any batch job builds one test video, stops for the user's confirmation, and applies their notes to the rest.
 8. **Adding a squad:** run `/new-squad <name>`. It scaffolds `squads/<name>/` and `.claude/agents/<name>-*.md` from `squads/_template/`, then add a row to the table above.
 
+## Network
+
+MCP tools (Open Art, Higgsfield, Google Drive) work in every session. Downloads (Drive files,
+generated clips, whisper models) need the session's own network: local sessions are fine; cloud
+sessions need the environment's Network access set to Custom (allowlist in README, "Where to run
+it") or Full. `python3 squads/video-production/scripts/doctor.py --network` tells you. At the
+default Trusted level the squad can plan, brief and `--dry-run`, not download.
+
 ## Tool names
 
 Connected MCP servers appear as `mcp__Open_Art__*`, `mcp__Higgsfield__*`, `mcp__github__*` and

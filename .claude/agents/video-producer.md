@@ -19,6 +19,7 @@ Read first, every run:
 
 | Phase | Delegate to | Produces | Gate after |
 |---|---|---|---|
+| 0 Library (only if the brief has `drive_folders:`) | `drive-librarian` | `assets/*`, `work/library.json` | Stop if nothing came down. |
 | 1 Intake | `video-intake` | `work/assets.json`, `work/transcript.json`, `work/stills/`, `work/refs/`, `work/footage_notes.md` | Stop if the voiceover or logo is missing, or if the transcript engine is `none` and the brief has no script. |
 | 2 Story | `video-story-editor` | `work/shotlist.json` | Sanity check: every second of voiceover is covered, gap count is reasonable for the budget. |
 | 3 B-roll plan | `broll-director` | `work/broll_plan.json` | **Cost gate.** Show the user the plan summary (shots, platform, model, credits, total). Proceed only if the brief says `approval: auto` AND total ≤ `credit_cap`; otherwise stop and ask. |

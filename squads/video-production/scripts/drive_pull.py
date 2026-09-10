@@ -14,8 +14,10 @@ Drive connector through the drive-librarian agent instead. Writes work/drive_man
 
 brief.md front matter:
   drive_folders:
-    - {kind: footage, url: "https://drive.google.com/drive/folders/..."}
-    - {kind: voiceover, url: "..."}
+    - {kind: auto, url: "https://drive.google.com/drive/folders/..."}   # flat folder: sorted by file type
+    - {kind: brand, url: "..."}                                            # or one folder per kind
+    - {kind: auto, path: "~/Library/CloudStorage/GoogleDrive-you@co.com/My Drive/Folder"}
+                                   # a Google Drive for Desktop mount (or any local folder): linked, no download
 """
 from __future__ import annotations
 
@@ -27,7 +29,39 @@ from pathlib import Path
 
 from common import dump_json, load_json, project_paths, read_brief_frontmatter
 
-KINDS = ("footage", "images", "voiceover", "music", "brand")
+KINDS = ("footage", "images", "voiceover", "music", "brand", "auto")
+MUSIC_HINTS = ("music", "bed", "track", "song", "instrumental", "beat")
+LOGO_HINTS = ("logo", "mark", "brand", "favicon")
+
+
+def classify(path: Path) -> str:
+    """Kind for a file from a flat folder: by media type, with filename hints for music and logos."""
+    from common import kind_of
+    media = kind_of(path)
+    name = path.name.lower()
+    if media == "video":
+        return "footage"
+    if media == "audio":
+        return "music" if any(h in name for h in MUSIC_HINTS) else "voiceover"
+    if media in ("image", "vector"):
+        return "brand" if any(h in name for h in LOGO_HINTS) else "images"
+    return "other"
+
+
+def sort_auto(files: list[str], assets: Path) -> dict[str, list[str]]:
+    import shutil
+    moved: dict[str, list[str]] = {}
+    for f in files:
+        src = Path(f)
+        kind = classify(src)
+        if kind == "other":
+            continue
+        dest = assets / kind / src.name
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        if src.resolve() != dest.resolve():
+            shutil.move(str(src), str(dest))
+        moved.setdefault(kind, []).append(str(dest))
+    return moved
 
 
 def pull(folder: str, dest: Path) -> list[str]:
@@ -37,7 +71,14 @@ def pull(folder: str, dest: Path) -> list[str]:
         sys.exit("gdown not installed: pip install gdown")
     dest.mkdir(parents=True, exist_ok=True)
     url = folder if folder.startswith("http") else f"https://drive.google.com/drive/folders/{folder}"
-    files = gdown.download_folder(url=url, output=str(dest), quiet=False, use_cookies=False, remaining_ok=True)
+    kwargs = {"quiet": False}
+    import inspect
+    params = inspect.signature(gdown.download_folder).parameters
+    if "use_cookies" in params:
+        kwargs["use_cookies"] = False
+    if "remaining_ok" in params:
+        kwargs["remaining_ok"] = True
+    files = gdown.download_folder(url=url, output=str(dest), **kwargs)
     if not files:
         sys.exit(f"nothing downloaded from {url}. Is the folder shared as 'Anyone with the link'? "
                  "Private folders need the Google Drive connector (drive-librarian agent).")
@@ -70,17 +111,21 @@ def main() -> None:
 
     if args.file_id:
         if not args.kind:
-            ap.error("--kind is required with --file-id")
+            ap.error("--kind is required with --file-id (use auto to sort by file type)")
         try:
             import gdown  # type: ignore
         except Exception:
             sys.exit("gdown not installed: pip install gdown")
-        dest_dir = p["assets"] / args.kind
+        kind = args.kind
+        if kind == "auto":
+            kind = classify(Path(args.name)) if args.name else "footage"
+        dest_dir = p["assets"] / kind
         dest_dir.mkdir(parents=True, exist_ok=True)
         out = str(dest_dir / args.name) if args.name else str(dest_dir) + "/"
-        got = gdown.download(id=args.file_id, output=out, quiet=False, fuzzy=True)
+        got = gdown.download(id=args.file_id, output=out, quiet=False)
         if not got:
             sys.exit(f"could not download {args.file_id}; the file (or its folder) must be shared as 'Anyone with the link'")
+        args.kind = kind
         manifest_path = p["work"] / "drive_manifest.json"
         manifest = load_json(manifest_path) if manifest_path.exists() else {"pulls": []}
         rel = str(Path(got).resolve().relative_to(p["root"]))
@@ -97,12 +142,17 @@ def main() -> None:
         return
 
     jobs: list[tuple[str, str]] = []
+    local_jobs: list[tuple[str, Path]] = []
     if args.from_brief:
         fm = read_brief_frontmatter(p["root"])
         for entry in fm.get("drive_folders") or []:
-            if isinstance(entry, dict) and entry.get("kind") in KINDS and entry.get("url"):
+            if not isinstance(entry, dict) or entry.get("kind") not in KINDS:
+                continue
+            if entry.get("path"):
+                local_jobs.append((entry["kind"], Path(str(entry["path"])).expanduser()))
+            elif entry.get("url"):
                 jobs.append((entry["kind"], entry["url"]))
-        if not jobs:
+        if not jobs and not local_jobs:
             sys.exit("brief.md has no drive_folders entries")
     elif args.folder and args.kind:
         jobs.append((args.kind, args.folder))
@@ -111,13 +161,45 @@ def main() -> None:
 
     manifest_path = p["work"] / "drive_manifest.json"
     manifest = load_json(manifest_path) if manifest_path.exists() else {"pulls": []}
+    for kind, folder in local_jobs:
+        if not folder.is_dir():
+            sys.exit(f"local folder not found: {folder} (is Google Drive for Desktop running and the folder available offline?)")
+        print(f"== {kind} ← {folder} (local, linked)")
+        linked: dict[str, list[str]] = {}
+        for f in sorted(folder.rglob("*")):
+            if not f.is_file() or f.name.startswith(".") or f.suffix.lower() in (".gdoc", ".gsheet", ".gslides"):
+                continue
+            k = classify(f) if kind == "auto" else kind
+            if k == "other":
+                continue
+            dest = p["assets"] / k / f.name
+            dest.parent.mkdir(parents=True, exist_ok=True)
+            if dest.exists() or dest.is_symlink():
+                dest.unlink()
+            try:
+                dest.symlink_to(f.resolve())
+            except OSError:
+                import shutil
+                shutil.copy2(f, dest)
+            linked.setdefault(k, []).append(str(dest.relative_to(p["root"])))
+        for k, lst in linked.items():
+            print(f"   {len(lst)} → assets/{k}/")
+        manifest["pulls"].append({"kind": kind, "path": str(folder), "files": [x for lst in linked.values() for x in lst],
+                                  "at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())})
     for kind, folder in jobs:
-        dest = p["assets"] / kind
+        dest = p["assets"] / ("_incoming" if kind == "auto" else kind)
         print(f"== {kind} ← {folder}")
         files = pull(folder, dest)
+        if kind == "auto":
+            sorted_files = sort_auto(files, p["assets"])
+            files = [f for lst in sorted_files.values() for f in lst]
+            for k, lst in sorted_files.items():
+                print(f"   {len(lst)} → assets/{k}/")
+            if dest.exists() and not any(dest.iterdir()):
+                dest.rmdir()
         rel = [str(Path(f).resolve().relative_to(p["root"])) if Path(f).resolve().is_relative_to(p["root"]) else f for f in files]
         manifest["pulls"].append({"kind": kind, "folder": folder, "files": rel, "at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())})
-        print(f"   {len(files)} files → assets/{kind}/")
+        print(f"   {len(files)} files")
     dump_json(manifest_path, manifest)
     print(f"work/drive_manifest.json updated; now run probe_assets.py")
 

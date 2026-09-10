@@ -35,7 +35,10 @@ Read: `work/broll_plan.json`, `squads/video-production/playbooks/platform-routin
 4. **Poll.** Open Art: `openart_creation_get(historyId)`, honour `pollAfterSeconds`, round-robin
    across jobs. Higgsfield: `jobs_wait` with groups of ≤12 and the default timeout, repeat while
    `all_terminal` is false. Do useful work between polls (download finished clips).
-5. **Download** each finished clip's URL to `work/broll/<shot_id>_v<n>.mp4` with
+5. **Download** each finished clip's URL (if a download fails with a proxy 403/405, the
+   session's network policy blocks that host: record the result URLs in `broll_results.json`
+   with `status: "generated_not_downloaded"`, stop, and tell the producer which host to allow,
+   per README "Where to run it"; generations are not lost, they stay in the platform's history) to `work/broll/<shot_id>_v<n>.mp4` with
    `python3 squads/video-production/scripts/download.py <url> <dest>`. Verify with
    `python3 squads/video-production/scripts/probe_assets.py --file <dest>`: it must have a video
    stream, a duration within 0.5 s of the request, and the requested aspect ratio.

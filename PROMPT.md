@@ -57,6 +57,10 @@ media before you commit.
 
 ## 2. Kickoff (run the squad on a job)
 
+Run real jobs from a local Claude Code session with Google Drive for Desktop, or from a cloud
+environment whose Network access is Custom/Full (README, "Where to run it"). The default cloud
+environment can plan and dry-run but cannot download media.
+
 ```
 /build-video projects/sundae-event-video
 ```

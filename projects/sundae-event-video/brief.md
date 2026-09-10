@@ -14,6 +14,13 @@ logo_placement: watermark+endcard
 brand_color: "#111111"         # TODO replace with Sundae's brand background hex
 music: none                    # add assets/music/<file> if a licensed bed is available
 assets_urls: []                # cloud session: list {kind, url, name} here instead of dropping files
+drive_folders:
+  - {kind: auto,  url: "https://drive.google.com/drive/folders/1FreqAjL0Bzk3fRS3Cgpkxjk29M81WKEe"}   # "Sundae - Videos + Edits": clips, photos, CEO voiceover segments 1-5 + "FULL DRAFT - all 5 stitched.mp3"
+  - {kind: brand, url: "https://drive.google.com/drive/folders/1Y3zm4TDFlaRc1H89YkZSo7YwQirg8NE0"}
+  # Local session with Google Drive for Desktop? Replace the two url lines above with path lines (no download at all):
+  # - {kind: auto,  path: "~/Library/CloudStorage/GoogleDrive-cstark@sundae.com/My Drive/Sundae - Videos + Edits"}
+  # - {kind: brand, path: "~/Library/CloudStorage/GoogleDrive-cstark@sundae.com/Shared drives/<drive>/.../Standard Sundae Logos"}   # "Standard Sundae Logos"
+voiceover_file: "FULL DRAFT - all 5 stitched.mp3"   # the squad uses this one; segments 1-5 are the same read in parts
 script: |
   (Paste the CEO's voiceover script here if available. It sharpens timing and lets the story
   editor start before the audio is in.)

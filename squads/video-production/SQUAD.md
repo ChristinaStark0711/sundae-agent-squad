@@ -90,7 +90,8 @@ captions.ass, render/, qa_report). Scripts take the matching path flags.
 | `drive_pull.py <project> --from-brief` / `--file-id <id> --kind <kind>` / `--b64 <path>` | download link-shared Drive folders or files (gdown); write small connector downloads from base64 |
 | `make_placeholder.py <project> --plan <broll_plan.json> --out-dir <dir>` | dry run: labelled stand-in clips for generated b-roll, credits 0 |
 | `batch_report.py <project>` | compile `output/reels/batch_report.md` from batch.json and each video's QA / results |
-| `doctor.py [--install]` | preflight: ffmpeg + filters, fonts, Pillow, faster-whisper, gdown, disk |
+| `doctor.py [--install] [--network]` | preflight: ffmpeg + filters, fonts, Pillow, faster-whisper, gdown, disk; `--network` probes Drive / Open Art / Higgsfield / Hugging Face reachability |
+| `drive_pull.py <project> --from-brief` with `path:` entries | link a local Google Drive for Desktop folder into `assets/`, sorted by type (no download) |
 
 Install extras: `pip install -r squads/video-production/scripts/requirements.txt`.
 

@@ -99,6 +99,37 @@ video-producer reports: file, duration, credits spent, what to review
 gates, and writes the final report. Each member is a subagent under `.claude/agents/` and can
 also be used on its own (for example `@agent-broll-director` to price a single shot).
 
+## Where to run it (read this once)
+
+The agents and the Open Art / Higgsfield / Google Drive **tools** work in any session, because
+MCP connector traffic goes through Anthropic's servers. **Downloads do not**: pulling your clips
+from Drive, fetching generated b-roll from Open Art or Higgsfield, and the first-time whisper
+model download all go through the session's own network. Pick one of these setups:
+
+| Setup | Media in | Media out | Notes |
+|---|---|---|---|
+| **A. Local Claude Code (desktop app or CLI) with Google Drive for Desktop** — recommended for real runs | the Drive folder is already on disk: put its path in the brief (`drive_folders: - {kind: auto, path: "~/Library/CloudStorage/GoogleDrive-you@sundae.com/My Drive/Sundae - Videos + Edits"}`) and nothing is downloaded | files land in `projects/<slug>/output/` on your machine | no network limits; whisper downloads its model once |
+| **B. Cloud session (claude.ai/code) with network access set to Custom or Full** | share the Drive folder as *Anyone with the link* once; the librarian pulls files by id | files are in the container; the squad sends them to you or uploads the batch report to Drive | on the environment's **Network access** selector choose **Custom**, paste the list below into **Allowed domains**, and tick *Also include default list of common package managers* (or choose **Full**) |
+| **C. Cloud session at the default Trusted level** | nothing but tiny files | nothing | planning, briefs, `--dry-run` rehearsals and code changes only |
+
+Allowed domains for setup B (one per line):
+
+```
+drive.google.com
+drive.usercontent.google.com
+*.googleusercontent.com
+openart.ai
+*.openart.ai
+higgsfield.ai
+*.higgsfield.ai
+huggingface.co
+*.huggingface.co
+*.cloudfront.net
+```
+
+If a download still fails, the error names the host; add it to the list. Check any session with
+`python3 squads/video-production/scripts/doctor.py --network`.
+
 ## Rehearse before spending
 
 Both commands take `--dry-run`: the squad runs every phase but stands in labelled placeholder

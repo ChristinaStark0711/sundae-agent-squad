@@ -13,18 +13,18 @@ hooks_style: "bold claim or question in the first line, captions from word one"
 cta: "Follow for more"          # TODO
 captions: {style: reels, highlight: true, position: 0.70, color: "#FFFFFF", accent: "#FFD400"}   # TODO accent = brand color
 logo_placement: top-left
-brand_color: "#111111"          # TODO Sundae brand background hex
+brand_color: "#111111"          # TODO Sundae brand background hex (logo folder has Sundae_Favicons-Red.png; confirm the red)
 music: library                  # none | library (uses whatever is in the Music folder)
 loudness_lufs: -14
 platform_preference: openart
 credit_cap: 3000                # TODO total credits across Open Art + Higgsfield for the whole batch
 approval: ask                   # the test video always stops for confirmation regardless
 drive_folders:
-  - {kind: footage,   url: "https://drive.google.com/drive/folders/REPLACE_FOOTAGE"}
-  - {kind: images,    url: "https://drive.google.com/drive/folders/REPLACE_IMAGES"}
-  - {kind: voiceover, url: "https://drive.google.com/drive/folders/REPLACE_VOICEOVERS"}
-  - {kind: music,     url: "https://drive.google.com/drive/folders/REPLACE_MUSIC"}
-  - {kind: brand,     url: "https://drive.google.com/drive/folders/REPLACE_BRAND"}
+  - {kind: auto,  url: "https://drive.google.com/drive/folders/1FreqAjL0Bzk3fRS3Cgpkxjk29M81WKEe"}    # "Sundae - Videos + Edits": clips, photos, voiceovers in one flat folder
+  - {kind: brand, url: "https://drive.google.com/drive/folders/1Y3zm4TDFlaRc1H89YkZSo7YwQirg8NE0"}
+  # Local session with Google Drive for Desktop? Replace the two url lines above with path lines (no download at all):
+  # - {kind: auto,  path: "~/Library/CloudStorage/GoogleDrive-cstark@sundae.com/My Drive/Sundae - Videos + Edits"}
+  # - {kind: brand, path: "~/Library/CloudStorage/GoogleDrive-cstark@sundae.com/Shared drives/<drive>/.../Standard Sundae Logos"}   # "Standard Sundae Logos" (Sundae_Logo.png, Sundae_Logo-Reversed.png, marks)
 drive_output_folder: null       # optional: Drive folder to upload finished reels into
 ---
 
