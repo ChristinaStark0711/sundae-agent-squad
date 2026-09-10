@@ -99,6 +99,14 @@ video-producer reports: file, duration, credits spent, what to review
 gates, and writes the final report. Each member is a subagent under `.claude/agents/` and can
 also be used on its own (for example `@agent-broll-director` to price a single shot).
 
+## Rehearse before spending
+
+Both commands take `--dry-run`: the squad runs every phase but stands in labelled placeholder
+clips for the generated b-roll (zero credits), so you can check the cut, captions, crop and
+pacing before the real run. `python3 squads/video-production/scripts/doctor.py` checks the local
+tooling. In Claude Code on the web, `.claude/hooks/session-start.sh` installs the tooling
+automatically when a session starts.
+
 ## Open Art vs Higgsfield
 
 Open Art is the default: cheaper per clip and the quality is good. The squad moves a shot to

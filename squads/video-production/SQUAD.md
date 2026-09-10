@@ -87,7 +87,10 @@ captions.ass, render/, qa_report). Scripts take the matching path flags.
 | `contact_sheet.py <video> [--interval 2]` | thumbnail grid for reviewing |
 | `qa_checks.py <project> <video> [--max-length 60] [--edl --transcript --shotlist --report --out]` | duration, black, silence, loudness, format, length limit → `work/qa_checks.json` |
 | `captions.py <project> [--transcript] [--out] [--style reels\|clean\|minimal] [--highlight] [--position 0.70]` | word-timed captions → ASS file the assembler burns in |
-| `drive_pull.py <project> --from-brief` | fallback: download link-shared Google Drive folders (gdown) |
+| `drive_pull.py <project> --from-brief` / `--file-id <id> --kind <kind>` / `--b64 <path>` | download link-shared Drive folders or files (gdown); write small connector downloads from base64 |
+| `make_placeholder.py <project> --plan <broll_plan.json> --out-dir <dir>` | dry run: labelled stand-in clips for generated b-roll, credits 0 |
+| `batch_report.py <project>` | compile `output/reels/batch_report.md` from batch.json and each video's QA / results |
+| `doctor.py [--install]` | preflight: ffmpeg + filters, fonts, Pillow, faster-whisper, gdown, disk |
 
 Install extras: `pip install -r squads/video-production/scripts/requirements.txt`.
 

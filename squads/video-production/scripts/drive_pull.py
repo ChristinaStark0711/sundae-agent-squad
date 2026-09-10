@@ -3,7 +3,10 @@
 
 usage: drive_pull.py <project> --from-brief
        drive_pull.py <project> --folder <url-or-id> --kind footage|images|voiceover|music|brand
+       drive_pull.py <project> --file-id <id> --kind <kind> [--name <filename>]
        drive_pull.py <project> --list <url-or-id>
+       drive_pull.py <project> --b64 <path>      (decode base64 from stdin into <path>, for small
+                                                  files the Drive connector returns inline)
 
 Uses `gdown` (pip install gdown). Folders must be shared as "Anyone with the link"; gdown
 downloads at most 50 files per folder. For private folders or larger sets, use the Google
@@ -48,8 +51,43 @@ def main() -> None:
     ap.add_argument("--folder")
     ap.add_argument("--kind", choices=KINDS)
     ap.add_argument("--list", help="list a folder's contents (JSON) without downloading")
+    ap.add_argument("--file-id", help="download one file by Drive id (link-shared)")
+    ap.add_argument("--name", help="filename for --file-id (default: Drive's name)")
+    ap.add_argument("--b64", help="write base64 from stdin to this path (relative to the project)")
     args = ap.parse_args()
     p = project_paths(args.project)
+
+    if args.b64:
+        import base64
+        dest = p["root"] / args.b64
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        data = sys.stdin.read().strip()
+        if data.startswith("data:"):
+            data = data.split(",", 1)[1]
+        dest.write_bytes(base64.b64decode(data))
+        print(f"{args.b64} ({dest.stat().st_size/1e6:.2f} MB)")
+        return
+
+    if args.file_id:
+        if not args.kind:
+            ap.error("--kind is required with --file-id")
+        try:
+            import gdown  # type: ignore
+        except Exception:
+            sys.exit("gdown not installed: pip install gdown")
+        dest_dir = p["assets"] / args.kind
+        dest_dir.mkdir(parents=True, exist_ok=True)
+        out = str(dest_dir / args.name) if args.name else str(dest_dir) + "/"
+        got = gdown.download(id=args.file_id, output=out, quiet=False, fuzzy=True)
+        if not got:
+            sys.exit(f"could not download {args.file_id}; the file (or its folder) must be shared as 'Anyone with the link'")
+        manifest_path = p["work"] / "drive_manifest.json"
+        manifest = load_json(manifest_path) if manifest_path.exists() else {"pulls": []}
+        rel = str(Path(got).resolve().relative_to(p["root"]))
+        manifest["pulls"].append({"kind": args.kind, "file_id": args.file_id, "files": [rel], "at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())})
+        dump_json(manifest_path, manifest)
+        print(f"{rel}")
+        return
 
     if args.list:
         import subprocess

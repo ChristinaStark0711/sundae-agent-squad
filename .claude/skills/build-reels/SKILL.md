@@ -1,7 +1,7 @@
 ---
 name: build-reels
 description: "Run the video-production squad in reels mode: pull videos, images, voiceovers, music and the logo from the Google Drive folders in a project brief, plan a mix-and-match batch of 9:16 short videos with burned-in captions for Instagram Reels, TikTok and YouTube Shorts, build ONE test video and stop for confirmation, then build the rest with --continue. Use when asked for reels, shorts, TikToks, vertical videos or a batch of social videos from a Drive library."
-argument-hint: "[project-dir] [--count N] [--continue] [--auto] [--revise \"notes\"]"
+argument-hint: "[project-dir] [--count N] [--continue] [--auto] [--dry-run] [--revise \"notes\"]"
 ---
 
 # /build-reels $ARGUMENTS
@@ -13,6 +13,7 @@ Flags anywhere in the arguments:
 - `--continue` — the test video was approved; build the remaining videos from `work/batch.json`
 - `--auto` — skip the batch-plan cost question (the test-video stop still happens)
 - `--revise "notes"` — apply notes to the test video (or to a named video id) and re-render it
+- `--dry-run` — no credits: labelled placeholder clips stand in for generated b-roll; rehearse the batch before the library is final
 
 ## Do this
 

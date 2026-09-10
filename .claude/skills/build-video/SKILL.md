@@ -1,7 +1,7 @@
 ---
 name: build-video
 description: "Run the video-production squad end-to-end on a project folder (brief + voiceover + footage + logo) to produce a finished video with generated b-roll from Open Art or Higgsfield. Use when asked to build, assemble, produce or revise a video from a brief."
-argument-hint: "[project-dir] [--auto] [--draft] [--revise \"notes\"]"
+argument-hint: "[project-dir] [--auto] [--draft] [--dry-run] [--revise \"notes\"]"
 ---
 
 # /build-video $ARGUMENTS
@@ -12,6 +12,7 @@ Flags anywhere in the arguments:
 - `--auto` — treat the brief as `approval: auto` for this run (still capped by `credit_cap`)
 - `--draft` — stop after a 540p draft render instead of the master
 - `--revise "notes"` — revision of the latest version; rerun from the earliest phase the notes touch
+- `--dry-run` — no credits: labelled placeholder clips stand in for generated b-roll so the whole pipeline can be rehearsed
 
 ## Do this
 

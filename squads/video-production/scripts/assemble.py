@@ -417,8 +417,11 @@ class Job:
         return out
 
     def loudnorm_args(self, mix: Path) -> str:
-        target = "I=-16:TP=-1.5:LRA=11"
-        if not (self.edl.get("audio") or {}).get("loudnorm", True):
+        audio = self.edl.get("audio") or {}
+        lufs = float(audio.get("loudnorm_target", -16))
+        tp = -1.0 if lufs >= -14.5 else -1.5
+        target = f"I={lufs}:TP={tp}:LRA=11"
+        if not audio.get("loudnorm", True):
             return ""
         proc = self._run([self.ff, "-hide_banner", "-i", str(mix), "-af", f"loudnorm={target}:print_format=json", "-f", "null", "-"], check=False)
         m = re.search(r"\{[^{}]*\"input_i\"[^{}]*\}", proc.stderr, re.S)

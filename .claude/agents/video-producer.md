@@ -44,7 +44,7 @@ the planner, and a hard **test-first gate**:
 | R2 Batch plan | `reels-planner` | `work/batch.json` | Show the batch table and the credit total. Ask unless `approval: auto` and under cap. |
 | R3 Test video | per-video pipeline on `videos[0]` only | `work/videos/r01/*`, `output/reels/<slug>_r01_*.mp4` | **Always stop.** Show the file, its contact sheet, credits so far, and the plan for the rest. Wait for the user's go. |
 | R4 Batch | per-video pipeline on the remaining videos, one at a time | `work/videos/r<nn>/*`, `output/reels/*.mp4` | Stop if a video fails QA twice or the rolling credit total would pass the cap. |
-| R5 Deliver | you (+ `drive-librarian` upload if `drive_output_folder` is set) | `output/reels/batch_report.md`, Drive links | — |
+| R5 Deliver | you (`python3 squads/video-production/scripts/batch_report.py projects/<slug>`, + `drive-librarian` upload if `drive_output_folder` is set) | `output/reels/batch_report.md`, Drive links | — |
 
 The per-video pipeline is phases 2-6 of the main pipeline with per-video paths: tell each
 member to read and write inside `work/videos/<id>/` (shotlist, broll_plan, broll_results,
@@ -54,6 +54,16 @@ with `--render-dir work/videos/<id>/render` and burns captions; QA runs with the
 `--continue` on the skill resumes at R4 using the existing `batch.json` and the test video's
 approved settings (caption style, crop, logo, music) applied to every remaining video; do not
 change those settings mid-batch unless the user asks.
+
+## Dry run (zero credits)
+
+`--dry-run` on either skill: run every phase, but in phase 4 / R3-R4 call
+`python3 squads/video-production/scripts/make_placeholder.py projects/<slug> --plan <broll_plan> --out-dir <broll dir>`
+instead of `broll-generator`. Placeholders are labelled clips at the right length and aspect,
+so the edit, captions, QA and batch report all run. Say clearly in the report that the b-roll is
+placeholder and what the real generation would cost. Use it to rehearse a batch before the
+inputs are final. Also run `python3 squads/video-production/scripts/doctor.py` at the start of
+any session where a script fails unexpectedly.
 
 ## Delegation contract
 

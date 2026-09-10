@@ -1,14 +1,28 @@
 # Google Drive access
 
-## Two paths
+## What the connector can and cannot do
 
-| Path | When | How |
-|---|---|---|
-| **Google Drive connector** (preferred) | the connector is enabled in this chat | `ToolSearch("google drive")` loads its tools: search files, read/download a file by id, upload. Works for private folders. |
-| **Link fallback** | connector not enabled, folder shared as *Anyone with the link* | `scripts/drive_pull.py <project> --from-brief` (gdown). Max 50 files per folder, public links only. |
+The Google Drive connector (`mcp__Google_Drive__*`) can **list and describe** any file the
+account can see (`search_files`, `get_file_metadata`, `list_recent_files`), **download small
+files inline** as base64 (`download_file_content`, fine for a logo, a photo, a short audio clip;
+not for a 300 MB video), and **upload** (`create_file`). It must be enabled per chat in the
+connector settings.
 
-The connector shows as installed on this account but toggled off per chat: enable it in the
-chat's connector settings, then start (or restart) the session so the tools load.
+Large media therefore comes down by file id with `gdown`, which needs the file or its folder
+shared as *Anyone with the link* (view only). Recommended setup: share the one parent folder by
+link once; keep the connector for listing, cataloguing and uploads.
+
+| Need | Tool / script |
+|---|---|
+| list a folder | `search_files` query `parentId = '<folder id>' and (mimeType contains 'video/' or mimeType contains 'image/' or mimeType contains 'audio/')`, paginate with `pageToken` |
+| file details | `get_file_metadata` (name, mimeType, size, modifiedTime) |
+| small file (< ~5 MB) | `download_file_content` → `scripts/drive_pull.py <project> --b64 assets/<kind>/<name>` with the base64 on stdin |
+| video / big file | `scripts/drive_pull.py <project> --file-id <id> --kind <kind> --name "<name>"` (link-shared) |
+| whole link-shared folder | `scripts/drive_pull.py <project> --from-brief` (50 files per folder max) |
+| upload a result | `create_file` with `parentId`, `title`, `contentMimeType`, `base64Content`, `disableConversionToGoogleType: true` (small files) |
+| check visibility | `get_file_permissions` on the folder id |
+
+Folder id = the part of the folder URL after `/folders/`.
 
 ## Folder layout the squad expects
 

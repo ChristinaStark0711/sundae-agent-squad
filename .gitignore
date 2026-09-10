@@ -27,3 +27,6 @@ Thumbs.db
 
 # Local Claude settings (personal permissions), keep shared settings if any
 .claude/settings.local.json
+
+# model cache written by the session-start hook
+.cache/
