@@ -1,0 +1,53 @@
+{
+  "meta": {
+    "slug": "my-video",
+    "created": "2026-09-10T00:00:00Z",
+    "credit_cap": 2000,
+    "balances": {"openart": 5400, "higgsfield": 1200},
+    "look_profile": "warm tungsten conference hall, handheld phone footage, clean and slightly flat, wood floors, white walls"
+  },
+  "shots": [
+    {
+      "id": "s02",
+      "platform": "openart",
+      "route_reason": "default",
+      "model": "veo3-1",
+      "mode": "text2video",
+      "params": {
+        "prompt": "Detail insert, slow lateral drift across a welcome table with name badges and lanyards laid out in neat rows, a hand enters and picks one up, warm tungsten room light with soft daylight from the left, mirrorless camera 50 mm, natural color, slight grain, welcoming. No on-screen text, no logos, no signage, no captions, hands natural with five fingers.",
+        "duration": 6,
+        "resolution": "1080p",
+        "aspectRatio": "16:9",
+        "generateAudio": false,
+        "mode": "lite",
+        "videoCount": 1
+      },
+      "reference": null,
+      "variants": 1,
+      "est_credits": 180,
+      "priced_with": "openart_model_cost",
+      "critical": false
+    },
+    {
+      "id": "s05",
+      "platform": "higgsfield",
+      "route_reason": "image2video from a local reference still; Open Art has no CLI upload",
+      "model": "seedance_2_5",
+      "mode": "omni_reference",
+      "params": {
+        "prompt": "Slow push-in, the room fills with people crossing frame out of focus, light unchanged, camera steady. No on-screen text, no logos, nobody looking into the lens.",
+        "duration": 5,
+        "resolution": "720p",
+        "aspect_ratio": "16:9",
+        "generate_audio": false
+      },
+      "reference": {"path": "work/refs/clip01_mid.png", "role": "start_image", "upload": "higgsfield media_upload"},
+      "variants": 1,
+      "est_credits": 90,
+      "priced_with": "generate_video get_cost",
+      "critical": false
+    }
+  ],
+  "totals": {"openart": 180, "higgsfield": 90, "all": 270, "under_cap": true},
+  "cuts_made_to_fit": []
+}

@@ -1,0 +1,29 @@
+{
+  "canvas": {"width": 1920, "height": 1080, "fps": 30},
+  "fade_in": 0.5,
+  "fade_out": 1.0,
+  "audio": {
+    "voiceover": {"src": "assets/voiceover/ceo.wav", "start": 0.0, "gain_db": 0},
+    "music": null,
+    "loudnorm": true
+  },
+  "timeline": [
+    {"id": "s01", "src": "assets/footage/clip03.mp4", "in": 12.0, "duration": 4.1, "fit": "cover"},
+    {"id": "s02", "src": "work/broll/s02_v1.mp4", "in": 0.5, "duration": 4.9, "fit": "cover"},
+    {"id": "s03", "src": "work/broll/s03_v1.mp4", "in": 0.5, "duration": 5.0, "fit": "cover",
+     "transition": {"type": "fade", "duration": 0.4}},
+    {"id": "s99", "type": "card", "duration": 3.5, "background": "#111111",
+     "image": {"src": "assets/brand/logo.png", "width_frac": 0.32},
+     "text": null}
+  ],
+  "overlays": [
+    {"type": "image", "src": "assets/brand/logo.png", "position": "bottom-right",
+     "width_frac": 0.07, "opacity": 0.85, "margin_frac": 0.03, "start": 4.1, "end": "card"}
+  ],
+  "_notes": {
+    "transition": "overlaps the previous segment; total = sum(duration) - sum(transition.duration)",
+    "music": "{\"src\": \"assets/music/bed.mp3\", \"gain_db\": -22, \"duck\": true, \"fade_out\": 2.0}",
+    "text on cards": "{\"value\": \"See you next year\", \"size_frac\": 0.05, \"color\": \"#FFFFFF\"} (needs Pillow)",
+    "overlay end": "\"card\" = until the first card item; or a number of seconds; or null = end"
+  }
+}

@@ -1,0 +1,29 @@
+# Media never goes in git. Drop it in projects/<slug>/assets/ locally or list URLs in brief.md.
+projects/*/assets/**
+!projects/*/assets/**/.gitkeep
+projects/*/work/
+projects/*/output/
+*.mp4
+*.mov
+*.mkv
+*.m4a
+*.wav
+*.mp3
+*.aac
+*.webm
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Local Claude settings (personal permissions), keep shared settings if any
+.claude/settings.local.json

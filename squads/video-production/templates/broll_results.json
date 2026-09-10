@@ -1,0 +1,37 @@
+{
+  "meta": {"slug": "my-video", "started": "2026-09-10T00:00:00Z", "finished": "2026-09-10T00:20:00Z"},
+  "shots": [
+    {
+      "id": "s02",
+      "platform": "openart",
+      "model": "veo3-1",
+      "mode": "text2video",
+      "job_id": "hist_abc123",
+      "status": "done",
+      "file": "work/broll/s02_v1.mp4",
+      "duration": 6.0,
+      "width": 1920,
+      "height": 1080,
+      "credits": 180,
+      "credits_source": "plan estimate",
+      "retries": 0,
+      "rejections": [],
+      "result_url": "https://..."
+    },
+    {
+      "id": "s05",
+      "platform": "higgsfield",
+      "model": "seedance_2_5",
+      "mode": "omni_reference",
+      "job_id": "3f1c...-uuid",
+      "status": "failed",
+      "file": null,
+      "credits": 180,
+      "credits_source": "response",
+      "retries": 1,
+      "rejections": ["v1: readable text on a banner", "v2: warped hands"],
+      "result_url": null
+    }
+  ],
+  "totals": {"openart": 180, "higgsfield": 180, "all": 360, "plan": 270, "over_plan_pct": 33}
+}

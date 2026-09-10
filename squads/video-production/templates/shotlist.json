@@ -1,0 +1,50 @@
+{
+  "meta": {
+    "slug": "my-video",
+    "voiceover_duration": 62.4,
+    "end_card_duration": 3.5,
+    "target_duration": 65.9,
+    "aspect": "16:9",
+    "notes": "Structure: cold open on real footage, body, end card."
+  },
+  "beats": [
+    {"id": "b01", "start": 0.0, "end": 6.2, "text": "Last month we brought the whole company together for the first time.", "arc": "hook"}
+  ],
+  "shots": [
+    {
+      "id": "s01",
+      "start": 0.0,
+      "end": 4.1,
+      "vo_text": "Last month we brought the whole company",
+      "source": "footage",
+      "footage": {"path": "assets/footage/clip03.mp4", "in": 12.0, "out": 16.1},
+      "camera": "wide handheld, people entering hall",
+      "notes": "strongest real moment; first word lands on the door opening"
+    },
+    {
+      "id": "s02",
+      "start": 4.1,
+      "end": 9.0,
+      "vo_text": "together for the first time.",
+      "source": "broll",
+      "broll_brief": {
+        "shows": "name badges and lanyards laid out on a welcome table, a hand picks one up",
+        "camera": "detail insert, slow lateral drift",
+        "match_ref": "work/refs/clip03_mid.png",
+        "why": "no real footage of check-in; welcome-table detail sells 'brought together'"
+      },
+      "camera": "detail",
+      "notes": ""
+    },
+    {
+      "id": "s99",
+      "start": 62.4,
+      "end": 65.9,
+      "vo_text": "",
+      "source": "card",
+      "card": {"logo": "assets/brand/logo.png", "text": null},
+      "camera": "static",
+      "notes": "end card"
+    }
+  ]
+}
