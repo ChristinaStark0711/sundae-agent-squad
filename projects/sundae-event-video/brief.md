@@ -8,7 +8,7 @@ target_length_s: null          # voiceover length + end card
 tone: "warm, proud, energetic; feels like being in the room"
 audience: "Sundae employees, customers and partners; company site and LinkedIn"
 platform_preference: openart   # Open Art by default; Higgsfield when the routing playbook says so
-credit_cap: 2500               # TODO confirm: total credits across Open Art + Higgsfield for this build
+credit_cap: 150               # set from live balance on 2026-09-15: Open Art 200 cr, Higgsfield 10 cr (both Free plan) - not enough for a full build, see note below
 approval: ask                  # show the b-roll plan and cost before generating
 logo_placement: watermark+endcard
 brand_color: "#111111"         # TODO replace with Sundae's brand background hex
@@ -25,6 +25,12 @@ script: |
   (Paste the CEO's voiceover script here if available. It sharpens timing and lets the story
   editor start before the audio is in.)
 ---
+
+> **Credits, checked live 2026-09-15:** Open Art has 200 credits, Higgsfield has 10 (both Free
+> plans). One 1080p Open Art b-roll shot runs about 120-180 credits, so this covers roughly one
+> real shot. Either top up before running for real, or run with `--dry-run` first (zero cost,
+> uses labelled placeholder clips so you can check the cut, captions and pacing), then decide
+> how much to add before the real generation.
 
 # What this video is
 
