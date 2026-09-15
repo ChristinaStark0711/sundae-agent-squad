@@ -87,3 +87,7 @@ like a real second camera was there, not like a stock montage.
 - Prefer detail inserts, crowd-from-behind, venue and abstract-brand shots for gaps
 - Open Art first; explain any shot routed to Higgsfield
 - Deliver `output/sundae-event-video_v1.mp4`, the contact sheet and `work/qa_report.md`
+- This is the long-form 16:9 deliverable in the current batch (paired with a short 16:9 cut in
+  `projects/sundae-16x9-short/`) - it's expected to land over 60 seconds using the full stitched
+  voiceover. Keep a real narrative arc: a clear opening, a body that develops one point at a
+  time (not a clip-salad), and a close that lands before the end card.

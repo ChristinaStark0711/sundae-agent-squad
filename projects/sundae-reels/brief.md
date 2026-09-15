@@ -3,9 +3,9 @@ slug: sundae-reels
 company: Sundae
 mode: reels
 platforms: [instagram, tiktok, shorts]
-count: 6                        # TODO how many videos in the first batch (video 1 is the test)
-length_range_s: [20, 45]
-max_length_s: 60
+count: 2                        # r01 = test, under 60s; r02 = over 60s (see notes below)
+length_range_s: [25, 85]
+max_length_s: 90
 canvas: {width: 1080, height: 1920, fps: 30}
 tone: "confident, quick, human; feels like Sundae, not an ad"
 themes: ["what Sundae does", "the team", "customer wins", "behind the scenes"]   # TODO
@@ -65,7 +65,7 @@ burned-in captions, the Sundae logo in the safe zone, and an end card with the C
 
 # Must show
 
-- TODO: people, products, places or moments that should appear across the batch
+- Whatever in the library best represents Sundae's work and team; no single mandatory shot, but favor real footage of people and product over generic b-roll
 
 # Must avoid
 
@@ -75,6 +75,16 @@ burned-in captions, the Sundae logo in the safe zone, and an end card with the C
 
 # Notes for the squad
 
+- This run is exactly 2 videos. r01 (the test) targets 25-55s. r02 targets 65-85s, so the
+  batch has one clearly-under-a-minute video and one clearly-over-a-minute video.
+- Pick a different voiceover (or a different segment) and a different hook for each of the 2
+  videos so they don't read as the same clip twice.
+- Every video needs a real narrative arc, not a montage: a hook that states or implies a clear
+  point in the first 2 seconds, a body that develops that one point with specific footage (not
+  generic filler), and a close that lands the point before the end card/CTA. Reject any
+  voiceover segment that doesn't stand alone as a complete thought.
+- Match caption style, pacing and any generated b-roll to that specific video's tone - a calm
+  story beat should not get high-energy cuts, and vice versa.
 - Build the test video (r01) from the strongest voiceover and the best real footage; stop and show it before anything else
-- Apply my notes on the test to the whole batch
+- Apply my notes on the test to r02 as well
 - Open Art first for b-roll; explain any shot routed to Higgsfield
