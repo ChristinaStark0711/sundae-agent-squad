@@ -195,7 +195,7 @@ def read_brief_frontmatter(project_root: Path) -> dict:
             continue
         key, _, rest = line.partition(":")
         key = key.strip()
-        rest = rest.split(" #")[0].strip() if not rest.strip().startswith('"') else rest.strip()
+        rest = _strip_comment(rest)
         if rest == "|" or rest == ">":
             buf = []
             i += 1
@@ -219,7 +219,7 @@ def read_brief_frontmatter(project_root: Path) -> dict:
                     i += 1
                     continue  # comment line inside the block (before, between or after items)
                 if stripped.startswith("-"):
-                    items.append(_scalar(stripped[1:].strip()))
+                    items.append(_scalar(_strip_comment(stripped[1:])))
                     i += 1
                     continue
                 break  # unrecognized indented content: stop rather than misparse
@@ -228,6 +228,25 @@ def read_brief_frontmatter(project_root: Path) -> dict:
         data[key] = _scalar(rest)
         i += 1
     return data
+
+
+def _strip_comment(v: str) -> str:
+    """Drop a trailing `# comment` that sits outside quotes, then strip whitespace."""
+    out, quote = [], None
+    for i, ch in enumerate(v):
+        if quote:
+            out.append(ch)
+            if ch == quote:
+                quote = None
+            continue
+        if ch in ('"', "'"):
+            quote = ch
+            out.append(ch)
+            continue
+        if ch == "#" and (i == 0 or v[i - 1].isspace()):
+            break
+        out.append(ch)
+    return "".join(out).strip()
 
 
 def _scalar(v: str):

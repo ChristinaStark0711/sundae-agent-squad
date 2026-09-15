@@ -16,20 +16,19 @@ music: none                    # add assets/music/<file> if a licensed bed is av
 assets_urls: []                # cloud session: list {kind, url, name} here instead of dropping files
 drive_folders:
   # "Sundae - Videos + Edits" is now split into three subfolders (checked live 2026-09-15):
-  # (cloud-session alternative, needs Network access = Custom/Full - see README "Where to run it")
-  # - {kind: auto, url: "https://drive.google.com/drive/folders/18cZYq7REMliJfiVr4XP298NTVAJBGTXI"}   # Videos
-  # - {kind: auto, url: "https://drive.google.com/drive/folders/1gIKFk3kAc1Xez6b30z9y8zONCEl4frk5"}   # Pictures
-  # - {kind: auto, url: "https://drive.google.com/drive/folders/1VzesKHzFyX46vRqfR1OB8C8Y2CMt39b1"}   # Audio: segments 1-5 + "FULL DRAFT - all 5 stitched.mp3"
+  # CLOUD SESSION (active): needs the environment's Network access set to Custom/Full and the Drive folder shared "Anyone with the link"
+  - {kind: auto, url: "https://drive.google.com/drive/folders/18cZYq7REMliJfiVr4XP298NTVAJBGTXI"}   # Videos
+  - {kind: auto, url: "https://drive.google.com/drive/folders/1gIKFk3kAc1Xez6b30z9y8zONCEl4frk5"}   # Pictures
+  - {kind: auto, url: "https://drive.google.com/drive/folders/1VzesKHzFyX46vRqfR1OB8C8Y2CMt39b1"}   # Audio: segments 1-5 + "FULL DRAFT - all 5 stitched.mp3"
   # - {kind: brand, url: "https://drive.google.com/drive/folders/1Y3zm4TDFlaRc1H89YkZSo7YwQirg8NE0"}  # "Standard Sundae Logos" - see BRAND note below
   #
-  # LOCAL RUN (Option A): "Sundae - Videos + Edits" is owned by cstark@sundae.com, so it syncs
-  # straight into her own My Drive - the three lines below are ready to use as-is. Keep only the
-  # block for your OS (Mac or Windows) and delete the other one.
+  # LOCAL RUN alternative (a Claude Code session on your own Mac with Google Drive for Desktop):
+  # comment out the url: lines above and uncomment the path: lines below.
   #
   # macOS (Google Drive for Desktop default mount):
-  - {kind: auto, path: "~/Library/CloudStorage/GoogleDrive-cstark@sundae.com/My Drive/Sundae - Videos + Edits/Videos"}
-  - {kind: auto, path: "~/Library/CloudStorage/GoogleDrive-cstark@sundae.com/My Drive/Sundae - Videos + Edits/Pictures"}
-  - {kind: auto, path: "~/Library/CloudStorage/GoogleDrive-cstark@sundae.com/My Drive/Sundae - Videos + Edits/Audio"}
+  # - {kind: auto, path: "~/Library/CloudStorage/GoogleDrive-cstark@sundae.com/My Drive/Sundae - Videos + Edits/Videos"}
+  # - {kind: auto, path: "~/Library/CloudStorage/GoogleDrive-cstark@sundae.com/My Drive/Sundae - Videos + Edits/Pictures"}
+  # - {kind: auto, path: "~/Library/CloudStorage/GoogleDrive-cstark@sundae.com/My Drive/Sundae - Videos + Edits/Audio"}
   # Windows (Google Drive for Desktop default mount - usually drive letter G:):
   # - {kind: auto, path: "G:\\My Drive\\Sundae - Videos + Edits\\Videos"}
   # - {kind: auto, path: "G:\\My Drive\\Sundae - Videos + Edits\\Pictures"}
@@ -39,9 +38,9 @@ drive_folders:
   # shared-with-me folders don't sync into your own My Drive automatically, so there's no
   # reliable local path for it. Simplest fix: open the folder in Drive, download
   # Sundae_Logo.png (and Sundae_Logo-Reversed.png if you want a light-background version) and
-  # drop them straight into assets/brand/ in this project - no drive_folders entry needed for
-  # brand at all. (Alternative: in Drive, right-click the folder -> "Add shortcut to Drive" so
-  # it appears under My Drive, then add a path: line here like the ones above.)
+  # drop them straight into assets/brand/ in this project (local run), or - in a cloud run - copy
+  # them into the Pictures subfolder of "Sundae - Videos + Edits": any image whose name contains
+  # "logo" is sorted into assets/brand/ automatically.
 voiceover_file: "FULL DRAFT - all 5 stitched.mp3"   # the squad uses this one; segments 1-5 are the same read in parts
 # Note: one photo (IMG_6072 3.HEIC) is an iPhone HEIC. The squad auto-converts HEIC/HEIF to PNG
 # during intake (pip install pillow-heif); without that package it's left as-is with a warning
