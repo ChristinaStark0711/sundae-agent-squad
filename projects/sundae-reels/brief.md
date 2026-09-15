@@ -13,7 +13,7 @@ hooks_style: "bold claim or question in the first line, captions from word one"
 cta: "Follow for more"          # TODO
 captions: {style: reels, highlight: true, position: 0.70, color: "#FFFFFF", accent: "#FFD400"}   # TODO accent = brand color
 logo_placement: top-left
-brand_color: "#111111"          # TODO Sundae brand background hex (logo folder has Sundae_Favicons-Red.png; confirm the red)
+brand_color: "#D93A53"   # sampled from the real logo asset (coral/cherry-red), confirmed by footage_notes.md against on-site signage/menus/gift bags
 music: library                  # none | library (uses whatever is in the Music folder)
 loudness_lufs: -14
 platform_preference: openart

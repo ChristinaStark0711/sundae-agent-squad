@@ -11,7 +11,7 @@ platform_preference: openart   # Open Art by default; Higgsfield when the routin
 credit_cap: 6000              # Open Art 24,000 cr / Higgsfield 1,210 cr available (checked live 2026-09-15); raise this if a batch needs more
 approval: ask                  # show the b-roll plan and cost before generating
 logo_placement: watermark+endcard
-brand_color: "#111111"         # TODO replace with Sundae's brand background hex
+brand_color: "#D93A53"   # sampled from the real logo asset (coral/cherry-red), confirmed by footage_notes.md against on-site signage/menus/gift bags
 music: none                    # add assets/music/<file> if a licensed bed is available
 assets_urls: []                # cloud session: list {kind, url, name} here instead of dropping files
 drive_folders:
@@ -73,7 +73,14 @@ like a real second camera was there, not like a stock montage.
 
 - Every usable real clip should appear at least once if it fits the narration
 - The Sundae logo as a watermark through the body and on the end card
-- TODO: named moments the CEO refers to (keynote, awards, team activity, venue exterior...)
+- Confirmed by footage review (see `work/footage_notes.md`): this is a small ~10-12 person
+  dinner built around a keynote-style sales pitch (CEO Josh Stech presenting, a customer
+  testimonial slide for "Carl Bassett, Operator... 3,000+ flips and rentals"), not a large
+  company all-hands. The keynote itself IS present and usable. Awards and organized team
+  activity are NOT in this library at all - don't expect or invent them. There is also no
+  clean venue-exterior shot and no isolated, well-lit CEO talking-head cutaway (he's always
+  either presenting at a distance or backlit against the screen) - both are legitimate gaps
+  for generated b-roll to fill, not omissions to chase in the real footage.
 
 # Must avoid
 

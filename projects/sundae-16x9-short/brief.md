@@ -11,7 +11,7 @@ platform_preference: openart   # Open Art by default; Higgsfield when the routin
 credit_cap: 3000               # smaller cap than the long-form cut - fewer b-roll shots needed at 45s
 approval: ask                  # show the b-roll plan and cost before generating
 logo_placement: watermark+endcard
-brand_color: "#111111"         # TODO replace with Sundae's confirmed brand background hex
+brand_color: "#D93A53"   # sampled from the real logo asset (coral/cherry-red), confirmed by footage_notes.md against on-site signage/menus/gift bags
 music: none                    # add assets/music/<file> if a licensed bed is available
 assets_urls: []                # cloud session: list {kind, url, name} here instead of dropping files
 drive_folders:
