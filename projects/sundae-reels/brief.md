@@ -17,7 +17,7 @@ brand_color: "#111111"          # TODO Sundae brand background hex (logo folder 
 music: library                  # none | library (uses whatever is in the Music folder)
 loudness_lufs: -14
 platform_preference: openart
-credit_cap: 150                # set from live balance on 2026-09-15: Open Art 200 cr, Higgsfield 10 cr (both Free plan) - not enough for a full batch, see note below
+credit_cap: 8000              # Open Art 24,000 cr / Higgsfield 1,210 cr available (checked live 2026-09-15); raise this if a batch needs more
 approval: ask                   # the test video always stops for confirmation regardless
 drive_folders:
   # "Sundae - Videos + Edits" is now split into three subfolders (checked live 2026-09-15):
@@ -36,11 +36,10 @@ drive_output_folder: null       # optional: Drive folder to upload finished reel
 # during intake (pip install pillow-heif); without that package it's left as-is with a warning.
 ---
 
-> **Credits, checked live 2026-09-15:** Open Art has 200 credits, Higgsfield has 10 (both Free
-> plans). One 1080p Open Art b-roll shot runs about 120-180 credits, so this covers roughly one
-> real shot. Either top up before running for real, or run with `--dry-run` first (zero cost,
-> uses labelled placeholder clips so you can check the cut, captions and pacing), then decide
-> how much to add before the real generation.
+> **Credits, checked live 2026-09-15:** Open Art (Pro) has 24,000 credits, Higgsfield (Plus)
+> has 1,210. Plenty for real generation - a 1080p Open Art b-roll shot runs about 120-180
+> credits. `--dry-run` still works any time you want a free rehearsal of the cut, captions and
+> pacing before spending real credits on a run.
 
 # What these videos are
 
