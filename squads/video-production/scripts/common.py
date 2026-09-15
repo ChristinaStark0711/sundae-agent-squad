@@ -207,9 +207,22 @@ def read_brief_frontmatter(project_root: Path) -> dict:
         if rest == "":
             items = []
             i += 1
-            while i < len(lines) and lines[i].startswith("  -"):
-                items.append(_scalar(lines[i].split("-", 1)[1].strip()))
-                i += 1
+            while i < len(lines):
+                ln = lines[i]
+                if not ln.strip():
+                    i += 1
+                    continue
+                if not ln.startswith("  "):
+                    break  # dedent: next top-level key
+                stripped = ln.lstrip()
+                if stripped.startswith("#"):
+                    i += 1
+                    continue  # comment line inside the block (before, between or after items)
+                if stripped.startswith("-"):
+                    items.append(_scalar(stripped[1:].strip()))
+                    i += 1
+                    continue
+                break  # unrecognized indented content: stop rather than misparse
             data[key] = items
             continue
         data[key] = _scalar(rest)

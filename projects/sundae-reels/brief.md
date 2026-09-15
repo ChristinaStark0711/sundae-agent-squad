@@ -21,16 +21,32 @@ credit_cap: 8000              # Open Art 24,000 cr / Higgsfield 1,210 cr availab
 approval: ask                   # the test video always stops for confirmation regardless
 drive_folders:
   # "Sundae - Videos + Edits" is now split into three subfolders (checked live 2026-09-15):
-  - {kind: auto, url: "https://drive.google.com/drive/folders/18cZYq7REMliJfiVr4XP298NTVAJBGTXI"}   # Videos
-  - {kind: auto, url: "https://drive.google.com/drive/folders/1gIKFk3kAc1Xez6b30z9y8zONCEl4frk5"}   # Pictures
-  - {kind: auto, url: "https://drive.google.com/drive/folders/1VzesKHzFyX46vRqfR1OB8C8Y2CMt39b1"}   # Audio: 5 voiceover segments + "FULL DRAFT - all 5 stitched.mp3"
-  - {kind: brand, url: "https://drive.google.com/drive/folders/1Y3zm4TDFlaRc1H89YkZSo7YwQirg8NE0"}  # "Standard Sundae Logos" (Sundae_Logo.png, Sundae_Logo-Reversed.png, marks)
-  # Local session with Google Drive for Desktop? Replace the url: lines above with path: lines (no download at all),
-  # pointing at the same three subfolders plus the logos folder, e.g.:
-  # - {kind: auto,  path: "~/Library/CloudStorage/GoogleDrive-cstark@sundae.com/My Drive/Sundae - Videos + Edits/Videos"}
-  # - {kind: auto,  path: "~/Library/CloudStorage/GoogleDrive-cstark@sundae.com/My Drive/Sundae - Videos + Edits/Pictures"}
-  # - {kind: auto,  path: "~/Library/CloudStorage/GoogleDrive-cstark@sundae.com/My Drive/Sundae - Videos + Edits/Audio"}
-  # - {kind: brand, path: "~/Library/CloudStorage/GoogleDrive-cstark@sundae.com/Shared drives/<drive>/.../Standard Sundae Logos"}
+  # (cloud-session alternative, needs Network access = Custom/Full - see README "Where to run it")
+  # - {kind: auto, url: "https://drive.google.com/drive/folders/18cZYq7REMliJfiVr4XP298NTVAJBGTXI"}   # Videos
+  # - {kind: auto, url: "https://drive.google.com/drive/folders/1gIKFk3kAc1Xez6b30z9y8zONCEl4frk5"}   # Pictures
+  # - {kind: auto, url: "https://drive.google.com/drive/folders/1VzesKHzFyX46vRqfR1OB8C8Y2CMt39b1"}   # Audio: 5 voiceover segments + "FULL DRAFT - all 5 stitched.mp3"
+  # - {kind: brand, url: "https://drive.google.com/drive/folders/1Y3zm4TDFlaRc1H89YkZSo7YwQirg8NE0"}  # "Standard Sundae Logos" - see BRAND note below (Sundae_Logo.png, Sundae_Logo-Reversed.png, marks)
+  #
+  # LOCAL RUN (Option A): "Sundae - Videos + Edits" is owned by cstark@sundae.com, so it syncs
+  # straight into her own My Drive - the three lines below are ready to use as-is. Keep only the
+  # block for your OS (Mac or Windows) and delete the other one.
+  #
+  # macOS (Google Drive for Desktop default mount):
+  - {kind: auto, path: "~/Library/CloudStorage/GoogleDrive-cstark@sundae.com/My Drive/Sundae - Videos + Edits/Videos"}
+  - {kind: auto, path: "~/Library/CloudStorage/GoogleDrive-cstark@sundae.com/My Drive/Sundae - Videos + Edits/Pictures"}
+  - {kind: auto, path: "~/Library/CloudStorage/GoogleDrive-cstark@sundae.com/My Drive/Sundae - Videos + Edits/Audio"}
+  # Windows (Google Drive for Desktop default mount - usually drive letter G:):
+  # - {kind: auto, path: "G:\\My Drive\\Sundae - Videos + Edits\\Videos"}
+  # - {kind: auto, path: "G:\\My Drive\\Sundae - Videos + Edits\\Pictures"}
+  # - {kind: auto, path: "G:\\My Drive\\Sundae - Videos + Edits\\Audio"}
+  #
+  # BRAND / LOGO: "Standard Sundae Logos" is owned by ccrammer@sundae.com and shared with you -
+  # shared-with-me folders don't sync into your own My Drive automatically, so there's no
+  # reliable local path for it. Simplest fix: open the folder in Drive, download
+  # Sundae_Logo.png (and Sundae_Logo-Reversed.png if you want a light-background version) and
+  # drop them straight into assets/brand/ in this project - no drive_folders entry needed for
+  # brand at all. (Alternative: in Drive, right-click the folder -> "Add shortcut to Drive" so
+  # it appears under My Drive, then add a path: line here like the ones above.)
 drive_output_folder: null       # optional: Drive folder to upload finished reels into
 # Note: one photo (IMG_6072 3.HEIC) is an iPhone HEIC. The squad auto-converts HEIC/HEIF to PNG
 # during intake (pip install pillow-heif); without that package it's left as-is with a warning.
