@@ -167,6 +167,9 @@ CLAUDE.md                house rules every session loads
 - ffmpeg on PATH, or `pip install imageio-ffmpeg` (bundles a static build; the scripts find it automatically).
 - Optional: `pip install gdown` for the Google Drive link-sharing fallback (the Drive connector
   covers private folders).
+- Optional: `pip install pillow-heif` to auto-convert iPhone HEIC/HEIF photos to PNG on intake
+  (the bundled ffmpeg has no HEIC decoder; without this package a HEIC file is left as-is with
+  a warning and can't be used).
 - Optional: `pip install faster-whisper` for word-level voiceover timestamps (also drives the
   burned-in captions). It downloads a model
   from Hugging Face on first use; where that is blocked (some sandboxes) the squad falls back to a

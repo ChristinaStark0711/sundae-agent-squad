@@ -34,6 +34,33 @@ MUSIC_HINTS = ("music", "bed", "track", "song", "instrumental", "beat")
 LOGO_HINTS = ("logo", "mark", "brand", "favicon")
 
 
+HEIC_EXT = {".heic", ".heif"}
+
+
+def convert_heic(path: Path) -> Path:
+    """iPhone HEIC/HEIF -> PNG so ffmpeg (no libheif in the bundled static build) can use it.
+    Returns the converted path, or the original path unchanged if conversion isn't available
+    or isn't needed."""
+    if path.suffix.lower() not in HEIC_EXT:
+        return path
+    try:
+        import pillow_heif  # type: ignore
+        pillow_heif.register_heif_opener()
+        from PIL import Image  # type: ignore
+    except Exception:
+        print(f"   ! {path.name}: HEIC/HEIF image, no HEIC decoder available "
+              f"(pip install pillow-heif) - kept as-is, ffmpeg in this build cannot read it")
+        return path
+    out = path.with_suffix(".png")
+    try:
+        Image.open(path).convert("RGB").save(out, "PNG")
+    except Exception as e:  # noqa: BLE001
+        print(f"   ! {path.name}: HEIC conversion failed ({e}) - kept as-is")
+        return path
+    print(f"   {path.name} -> {out.name} (HEIC converted to PNG)")
+    return out
+
+
 def classify(path: Path) -> str:
     """Kind for a file from a flat folder: by media type, with filename hints for music and logos."""
     from common import kind_of
@@ -60,6 +87,7 @@ def sort_auto(files: list[str], assets: Path) -> dict[str, list[str]]:
         dest.parent.mkdir(parents=True, exist_ok=True)
         if src.resolve() != dest.resolve():
             shutil.move(str(src), str(dest))
+        dest = convert_heic(dest)
         moved.setdefault(kind, []).append(str(dest))
     return moved
 
@@ -176,11 +204,21 @@ def main() -> None:
             dest.parent.mkdir(parents=True, exist_ok=True)
             if dest.exists() or dest.is_symlink():
                 dest.unlink()
-            try:
-                dest.symlink_to(f.resolve())
-            except OSError:
-                import shutil
-                shutil.copy2(f, dest)
+            if f.suffix.lower() in HEIC_EXT:
+                # convert from the source, don't symlink a format ffmpeg can't read
+                converted = convert_heic(f)
+                if converted != f:
+                    import shutil
+                    shutil.copy2(converted, dest.with_suffix(".png"))
+                    dest = dest.with_suffix(".png")
+                else:
+                    dest.symlink_to(f.resolve())
+            else:
+                try:
+                    dest.symlink_to(f.resolve())
+                except OSError:
+                    import shutil
+                    shutil.copy2(f, dest)
             linked.setdefault(k, []).append(str(dest.relative_to(p["root"])))
         for k, lst in linked.items():
             print(f"   {len(lst)} → assets/{k}/")

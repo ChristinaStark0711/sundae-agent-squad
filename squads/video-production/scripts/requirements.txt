@@ -6,3 +6,5 @@ faster-whisper>=1.0
 Pillow>=10
 # optional: fallback download of link-shared Google Drive folders (private folders use the Drive connector)
 gdown>=5
+# optional: convert iPhone HEIC/HEIF photos to PNG (the bundled ffmpeg has no libheif)
+pillow-heif>=0.18

@@ -35,15 +35,22 @@ Folder id = the part of the folder URL after `/folders/`.
 
 ## Folder layout the squad expects
 
+Either one folder per kind, or a single flat/mixed folder (or a few mixed subfolders) mapped
+with `kind: auto`, which sorts every file by its real type regardless of which folder or
+subfolder it's in:
+
 ```
 <Your Drive folder>/
-  Footage/     videos (any orientation)
-  Images/      stills
-  Voiceovers/  one file per voiceover (wav / mp3 / m4a)
-  Music/       licensed beds
-  Brand/       logo (transparent PNG), brand colors in brief.md
+  Videos/      or Footage/   videos (any orientation)
+  Pictures/    or Images/    stills - iPhone HEIC/HEIF is fine, auto-converted to PNG on intake
+  Audio/       or Voiceovers/  voiceover(s) and any music beds (music needs "music"/"bed"/"track" in the filename)
+  Brand/       logo (transparent PNG or SVG), brand colors in brief.md
   Output/      (optional) where finished videos are uploaded
 ```
+
+`kind: auto` is the robust default: list each subfolder separately in `drive_folders` and every
+video, photo and audio file lands in the right `assets/<kind>/` regardless of how the folder is
+organized on the Drive side.
 
 One flat folder with everything in it also works: give it `kind: auto` and the librarian sorts
 by file type (videos → footage, photos → images, audio → voiceover unless the name says

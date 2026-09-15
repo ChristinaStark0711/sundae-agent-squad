@@ -15,12 +15,21 @@ brand_color: "#111111"         # TODO replace with Sundae's brand background hex
 music: none                    # add assets/music/<file> if a licensed bed is available
 assets_urls: []                # cloud session: list {kind, url, name} here instead of dropping files
 drive_folders:
-  - {kind: auto,  url: "https://drive.google.com/drive/folders/1FreqAjL0Bzk3fRS3Cgpkxjk29M81WKEe"}   # "Sundae - Videos + Edits": clips, photos, CEO voiceover segments 1-5 + "FULL DRAFT - all 5 stitched.mp3"
-  - {kind: brand, url: "https://drive.google.com/drive/folders/1Y3zm4TDFlaRc1H89YkZSo7YwQirg8NE0"}
-  # Local session with Google Drive for Desktop? Replace the two url lines above with path lines (no download at all):
-  # - {kind: auto,  path: "~/Library/CloudStorage/GoogleDrive-cstark@sundae.com/My Drive/Sundae - Videos + Edits"}
-  # - {kind: brand, path: "~/Library/CloudStorage/GoogleDrive-cstark@sundae.com/Shared drives/<drive>/.../Standard Sundae Logos"}   # "Standard Sundae Logos"
+  # "Sundae - Videos + Edits" is now split into three subfolders (checked live 2026-09-15):
+  - {kind: auto, url: "https://drive.google.com/drive/folders/18cZYq7REMliJfiVr4XP298NTVAJBGTXI"}   # Videos
+  - {kind: auto, url: "https://drive.google.com/drive/folders/1gIKFk3kAc1Xez6b30z9y8zONCEl4frk5"}   # Pictures
+  - {kind: auto, url: "https://drive.google.com/drive/folders/1VzesKHzFyX46vRqfR1OB8C8Y2CMt39b1"}   # Audio: segments 1-5 + "FULL DRAFT - all 5 stitched.mp3"
+  - {kind: brand, url: "https://drive.google.com/drive/folders/1Y3zm4TDFlaRc1H89YkZSo7YwQirg8NE0"}  # "Standard Sundae Logos"
+  # Local session with Google Drive for Desktop? Replace the url: lines above with path: lines (no download at all),
+  # pointing at the same three subfolders plus the logos folder, e.g.:
+  # - {kind: auto,  path: "~/Library/CloudStorage/GoogleDrive-cstark@sundae.com/My Drive/Sundae - Videos + Edits/Videos"}
+  # - {kind: auto,  path: "~/Library/CloudStorage/GoogleDrive-cstark@sundae.com/My Drive/Sundae - Videos + Edits/Pictures"}
+  # - {kind: auto,  path: "~/Library/CloudStorage/GoogleDrive-cstark@sundae.com/My Drive/Sundae - Videos + Edits/Audio"}
+  # - {kind: brand, path: "~/Library/CloudStorage/GoogleDrive-cstark@sundae.com/Shared drives/<drive>/.../Standard Sundae Logos"}
 voiceover_file: "FULL DRAFT - all 5 stitched.mp3"   # the squad uses this one; segments 1-5 are the same read in parts
+# Note: one photo (IMG_6072 3.HEIC) is an iPhone HEIC. The squad auto-converts HEIC/HEIF to PNG
+# during intake (pip install pillow-heif); without that package it's left as-is with a warning
+# and won't be usable, since the bundled ffmpeg can't read HEIC directly.
 script: |
   (Paste the CEO's voiceover script here if available. It sharpens timing and lets the story
   editor start before the audio is in.)

@@ -21,8 +21,15 @@ For each `drive_folders` entry, take the folder id from the URL (the part after 
 call `search_files` with
 `parentId = '<folder id>' and (mimeType contains 'video/' or mimeType contains 'image/' or mimeType contains 'audio/')`,
 `pageSize` 50, following `next_page_token` until empty. Record for every file: id, name,
-mimeType, size, modifiedTime. If a folder returns nothing, check `get_file_permissions` on the
-folder id and tell the user whether the connector can see it.
+mimeType, size, modifiedTime.
+
+If that returns nothing, check whether the folder actually holds **subfolders** instead of
+files directly: `search_files` with `parentId = '<folder id>' and mimeType = 'application/vnd.google-apps.folder'`.
+If it does, tell the user and either list each subfolder separately in the brief's
+`drive_folders` (preferred - ask them to add the subfolder URLs) or, for this run, recurse into
+each subfolder id yourself with the same media query. If a folder returns nothing and has no
+subfolders either, check `get_file_permissions` on the folder id and tell the user whether the
+connector can see it.
 
 A folder with `kind: auto` is flat: sort each file by type (video → `footage`, image → `images`,
 audio → `voiceover` unless the name says music/bed/track, image named logo/mark/brand →
@@ -48,6 +55,11 @@ Run `python3 squads/video-production/scripts/doctor.py --network` first and read
   explicitly asks for, and verify it opens afterwards (base64 through the model corrupts files).
 - Skip a file that already exists locally with the same size. Keep original filenames. Record
   ids and paths in `work/drive_manifest.json`.
+
+iPhone photos may be `.HEIC`/`.HEIF`. `drive_pull.py` converts these to PNG automatically during
+intake if `pillow-heif` is installed; without it they're left as-is with a warning and can't be
+used downstream (the bundled ffmpeg has no HEIC decoder). Mention any unconverted HEIC files in
+your report.
 
 ## 3. Catalog
 
