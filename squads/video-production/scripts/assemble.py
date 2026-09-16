@@ -419,7 +419,12 @@ class Job:
     def loudnorm_args(self, mix: Path) -> str:
         audio = self.edl.get("audio") or {}
         lufs = float(audio.get("loudnorm_target", -16))
-        tp = -1.0 if lufs >= -14.5 else -1.5
+        tp_ceiling = float(audio.get("true_peak_dbtp", -1.0 if lufs >= -14.5 else -1.5))
+        # Measured true peak on the final muxed file (what QA checks) runs ~0.15-0.3 dB hotter
+        # than the PCM fed to the AAC encoder (inter-sample overs from the lossy encode/decode
+        # round trip). Target a stricter internal ceiling so the encoded output still clears
+        # the platform spec after that overshoot.
+        tp = tp_ceiling - 0.3
         target = f"I={lufs}:TP={tp}:LRA=11"
         if not audio.get("loudnorm", True):
             return ""
